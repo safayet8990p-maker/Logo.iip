@@ -1,0 +1,2691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Logo Wall</title>
+<style>
+  :root {
+    --bg: #FBF6E6;
+    --tile: #FFFFFF;
+    --tile-alt: #F5EED8;
+    --line: #EFE6C8;
+    --ink: #5E5434;
+    --muted: #9A8F6B;
+    --accent: #B48A2C;
+  }
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 13px/1.4 "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+  }
+  #c {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+    touch-action: none;
+  }
+  #c.drag {
+    cursor: grabbing;
+  }
+
+  /* Compact Bottom-Left Header Bar */
+  .bar {
+    position: fixed;
+    left: max(12px, env(safe-area-inset-left));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    height: 36px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 11px 0 6px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(94, 84, 52, 0.11);
+    z-index: 30;
+  }
+  .menu-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: rgba(180, 138, 44, 0.12);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.15s;
+  }
+  .menu-btn:hover {
+    background: rgba(180, 138, 44, 0.22);
+  }
+  .menu-btn span {
+    display: block;
+    width: 12px;
+    height: 1.6px;
+    background: var(--ink);
+    border-radius: 2px;
+    transition: transform 0.22s ease, opacity 0.18s ease;
+  }
+  .menu-btn.open span:nth-child(1) {
+    transform: translateY(4.6px) rotate(45deg);
+  }
+  .menu-btn.open span:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-btn.open span:nth-child(3) {
+    transform: translateY(-4.6px) rotate(-45deg);
+  }
+  .bar b {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  #status {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 11.5px;
+    white-space: nowrap;
+  }
+
+  /* Compact Bottom-Left Upward Slide-Out Nav Menu */
+  .nav-drawer {
+    position: fixed;
+    left: max(12px, env(safe-area-inset-left));
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: 214px;
+    padding: 9px 9px 46px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid var(--line);
+    border-radius: 18px 20px 14px 14px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 -8px 30px rgba(94, 84, 52, 0.14);
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transform-origin: bottom left;
+    transform: translateY(12px) scale(0.92);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+  }
+  .nav-drawer.open {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .nav-item {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 7.5px 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .nav-item:hover {
+    background: var(--bg);
+    border-color: var(--line);
+  }
+  .nav-item:active {
+    transform: scale(0.98);
+  }
+  .nav-item.primary {
+    background: var(--accent);
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+  .nav-item.primary:hover {
+    background: #9E7722;
+    border-color: transparent;
+  }
+  .nav-item.active {
+    background: rgba(180, 138, 44, 0.15);
+    border-color: rgba(180, 138, 44, 0.45);
+    color: #7A5A12;
+    font-weight: 600;
+  }
+  .nav-item.off-state {
+    background: rgba(180, 40, 52, 0.08);
+    border-color: rgba(180, 40, 52, 0.22);
+    color: #8D2630;
+  }
+  .nav-item svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+  .pill-tag {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1.5px 6px;
+    border-radius: 999px;
+    background: rgba(94, 84, 52, 0.1);
+    color: var(--ink);
+  }
+  .nav-item.active .pill-tag {
+    background: var(--accent);
+    color: #FFFFFF;
+  }
+  .nav-item.off-state .pill-tag {
+    background: #B42834;
+    color: #FFFFFF;
+  }
+  .nav-divider {
+    height: 1px;
+    background: var(--line);
+    margin: 1px 4px;
+  }
+  .nav-note {
+    font-size: 10.5px;
+    color: var(--muted);
+    padding: 1px 8px 2px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Small Reddish 3, 2, 1 Countdown Badge */
+  #driftTimer {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(220, 53, 69, 0.13);
+    border: 1px solid rgba(208, 52, 66, 0.34);
+    color: #B42834;
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 14px rgba(180, 40, 52, 0.13);
+    z-index: 35;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.84);
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #driftTimer.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+  #driftTimer .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #D93843;
+    animation: pulseDot 0.9s infinite ease-in-out;
+  }
+  @keyframes pulseDot {
+    0%, 100% { transform: scale(0.85); opacity: 0.65; }
+    50% { transform: scale(1.25); opacity: 1; }
+  }
+
+  /* Folder / ZIP Picker Overlay */
+  #picker {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 50;
+  }
+  #picker.hidden {
+    display: none;
+  }
+  .picker-card {
+    max-width: 420px;
+    width: 100%;
+    background: var(--tile);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 12px 32px rgba(94, 84, 52, 0.09);
+  }
+  .picker-card h2 {
+    margin: 0 0 8px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .picker-card p {
+    margin: 0 0 20px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .picker-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pick-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px 16px;
+    border-radius: 12px;
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    transition: transform 0.1s, background 0.15s;
+  }
+  .pick-btn.main {
+    background: var(--accent);
+    border-color: transparent;
+    color: #FFFFFF;
+  }
+  .pick-btn:active {
+    transform: scale(0.98);
+  }
+  #folderInput, #zipInput {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div id="driftTimer" aria-live="polite">
+  <span class="dot"></span>
+  <span id="driftTimerNum">3</span>
+</div>
+
+<div class="bar" id="bar">
+  <button class="menu-btn" id="menuBtn" type="button" aria-label="Toggle Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <b>Logo Wall</b>
+  <span id="status">Initializing…</span>
+</div>
+
+<nav class="nav-drawer" id="navDrawer" aria-label="Wall Navigation">
+  <button class="nav-item primary" id="randomBtn" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+      <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+      <line x1="4" y1="4" x2="9" y2="9"/>
+    </svg>
+    <span>Random</span>
+  </button>
+
+  <button class="nav-item" id="infinityBtn" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.74-8z"/>
+    </svg>
+    <span>Infinity</span>
+    <span class="pill-tag" id="infinityTag">OFF</span>
+  </button>
+
+  <button class="nav-item off-state" id="autoScrollToggleBtn" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/>
+      <line x1="9" y1="9" x2="15" y2="15"/>
+      <line x1="15" y1="9" x2="9" y2="15"/>
+    </svg>
+    <span>Auto Scroll</span>
+    <span class="pill-tag" id="autoScrollTag">OFF</span>
+  </button>
+
+  <button class="nav-item" id="fullViewBtn" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+      <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+    </svg>
+    <span>Full Wall (100%)</span>
+  </button>
+
+  <button class="nav-item" id="autoBtn" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </svg>
+    <span id="autoLabel">Auto Showcase</span>
+  </button>
+
+  <div class="nav-divider"></div>
+
+  <button class="nav-item" id="changeSourceBtn" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span>Open Folder / .zip</span>
+  </button>
+
+  <div class="nav-note" id="idleNote">Auto scroll is OFF (Manual mode)</div>
+</nav>
+
+<div id="picker" class="hidden">
+  <div class="picker-card" id="dropCard">
+    <h2 id="pickTitle">Load Image Folder</h2>
+    <p id="pickDesc">Select your unzipped folder once — all images load automatically without adding links.</p>
+    <div class="picker-actions">
+      <label class="pick-btn main" for="folderInput">Select Image Folder</label>
+      <label class="pick-btn" for="zipInput">Or Select .zip Archive</label>
+    </div>
+    <input type="file" id="folderInput" webkitdirectory directory multiple>
+    <input type="file" id="zipInput" accept=".zip,application/zip">
+  </div>
+</div>
+
+<script>
+(() => {
+  /* ===== Configuration ===== */
+  const CONFIG = {
+    // Auto-checked folders on http/https server (place your unzipped images in any of these!)
+    AUTO_FOLDERS: ["images/", "logos/", "20k/"],
+    AUTO_MANIFESTS: ["images.json", "logos.json"],
+    AUTO_ZIP_URL: "/20k.zip",
+
+    GAP: 2,
+    BASE_ROW_MIN: 90,
+    BASE_ROW_MAX: 215,
+    INITIAL_ZOOM_RATIO: 0.48,
+    SAFE_MARGIN_PX: 256,
+
+    STD_IDLE_MS: 20000,
+    STD_ZOOMOUT_HOLD_MS: 3000,
+    STD_LOGO_HOLD_MS: 10000,
+
+    INF_IDLE_MS: 15000,
+    INF_BASE_SPEED_PX: 580,
+    INF_RAMP_SEC: 8,
+    INF_CRUISE_MAX_SEC: 9.5,
+    INF_LOGO_PAUSE_MS: 2000,
+    INF_CRUISE_RATIO: 0.50,
+
+    TILE_SIZE: 768,
+    OVERVIEW_MAX: 2560,
+    WORKER_CONCURRENCY: 4,
+    FOLDER_BATCH_SIZE: 20,
+    ZIP_RUN_BYTES: 2.5e6,
+    ZIP_RUN_MAX_ITEMS: 36,
+    MAX_SECTOR_RAM: navigator.deviceMemory && navigator.deviceMemory <= 4 ? 70 : 180,
+    MAX_HIRES_RAM: 90,
+    HIRES_ZOOM_THRESHOLD: 1.35
+  };
+
+  const $ = s => document.querySelector(s);
+  const cv = $("#c"), ctx = cv.getContext("2d", { alpha: false });
+  const st = $("#status"), picker = $("#picker"), dropCard = $("#dropCard");
+  const folderInput = $("#folderInput"), zipInput = $("#zipInput");
+  const pickTitle = $("#pickTitle"), pickDesc = $("#pickDesc");
+  const menuBtn = $("#menuBtn"), navDrawer = $("#navDrawer");
+  const randomBtn = $("#randomBtn"), infinityBtn = $("#infinityBtn"), infinityTag = $("#infinityTag");
+  const autoScrollToggleBtn = $("#autoScrollToggleBtn"), autoScrollTag = $("#autoScrollTag");
+  const fullViewBtn = $("#fullViewBtn"), autoBtn = $("#autoBtn"), autoLabel = $("#autoLabel");
+  const changeSourceBtn = $("#changeSourceBtn"), idleNote = $("#idleNote");
+  const driftTimer = $("#driftTimer"), driftTimerNum = $("#driftTimerNum");
+
+  const EXT = /\.(png|jpe?g|gif|webp|avif|svg|bmp)$/i;
+  const MIME = {
+    png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg",
+    gif: "image/gif", webp: "image/webp", avif: "image/avif",
+    svg: "image/svg+xml", bmp: "image/bmp"
+  };
+
+  let N = 0;
+  let X, Y, W, H, rowY = [], rowS = [], worldW = 0, worldH = 0, pitchW = 0, pitchH = 0, minSide = 120;
+  let dpr = 1, vw = 0, vh = 0;
+  let view = { s: 1, x: 0, y: 0 };
+  let raf = 0;
+
+  let infinityMode = false;
+  let autoScrollEnabled = false;
+  let highlight = null;
+
+  /* ===== Active Source State ("folder_http" | "folder_local" | "zip") ===== */
+  let sourceMode = "none";
+  let sourceId = "";
+  let folderBaseUrl = "";
+  let folderNames = [];
+  let localFiles = [];
+
+  // ZIP state
+  let zipSource = null;
+  let off, csz, meth, nlen, mime;
+
+  function posMod(n, m) {
+    return ((n % m) + m) % m;
+  }
+
+  const randBuf = new Uint32Array(1);
+  function trueRandom() {
+    if (window.crypto && crypto.getRandomValues) {
+      crypto.getRandomValues(randBuf);
+      return randBuf[0] / 4294967296;
+    }
+    return Math.random();
+  }
+
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function get15CmPx() {
+    const el = document.createElement("div");
+    el.style.cssText = "position:absolute;visibility:hidden;width:15cm;height:1px";
+    document.body.appendChild(el);
+    const px = el.getBoundingClientRect().width;
+    document.body.removeChild(el);
+    return px > 0 ? px : 567;
+  }
+  const TARGET_15CM_PX = get15CmPx();
+
+  /* ===== Folder Discovery (HTML Directory Listing & JSON Manifest) ===== */
+  async function tryFetchManifest(manifestUrl) {
+    const res = await fetch(manifestUrl);
+    if (!res.ok) throw new Error("Not found");
+    const list = await res.json();
+    if (!Array.isArray(list) || list.length === 0) throw new Error("Empty");
+    const valid = list.filter(name => typeof name === "string" && EXT.test(name));
+    if (!valid.length) throw new Error("No images");
+    return valid;
+  }
+
+  async function tryFetchDirectoryListing(folderUrl) {
+    const base = folderUrl.endsWith("/") ? folderUrl : folderUrl + "/";
+    const res = await fetch(base);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const ct = (res.headers.get("content-type") || "").toLowerCase();
+    if (!ct.includes("text/html")) throw new Error("No directory index");
+
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const anchors = doc.querySelectorAll("a[href]");
+    const files = [];
+    const seen = new Set();
+
+    for (let k = 0; k < anchors.length; k++) {
+      let href = anchors[k].getAttribute("href");
+      if (!href || href.startsWith("?") || href.startsWith("#") || href.startsWith("../") || href === "/") continue;
+      href = href.split("?")[0].split("#")[0];
+      if (href.endsWith("/")) continue;
+
+      let rawName = href.split("/").pop();
+      try { rawName = decodeURIComponent(rawName); } catch {}
+      if (!rawName || rawName.startsWith(".") || !EXT.test(rawName)) continue;
+
+      if (!seen.has(rawName)) {
+        seen.add(rawName);
+        files.push(rawName);
+      }
+    }
+
+    if (!files.length) throw new Error("No images in directory");
+    return { base, files };
+  }
+
+  /* ===== ZIP Support (Kept as Fallback) ===== */
+  function createFileSource(file) {
+    return {
+      id: `file:${file.name}:${file.size}:${file.lastModified}`,
+      size: file.size,
+      read: (a, b) => file.slice(a, Math.min(b + 1, file.size)).arrayBuffer()
+    };
+  }
+
+  async function createHttpZipSource(url) {
+    const probe = await fetch(url, { headers: { Range: "bytes=0-0" } });
+    if (!probe.ok) throw new Error(`HTTP ${probe.status}`);
+
+    if (probe.status === 206) {
+      try { await probe.body?.cancel(); } catch {}
+      const cr = probe.headers.get("content-range") || "";
+      const m = /\/(\d+)$/.exec(cr);
+      const len = m ? Number(m[1]) : Number(probe.headers.get("content-length") || 0);
+      if (len > 0) {
+        return {
+          id: `url:${url}:${len}`,
+          size: len,
+          read: async (a, b) => {
+            const end = Math.min(b, len - 1);
+            const r = await fetch(url, { headers: { Range: `bytes=${a}-${end}` } });
+            if (r.status !== 206) throw new Error(`Range HTTP ${r.status}`);
+            return r.arrayBuffer();
+          }
+        };
+      }
+    }
+
+    const totalLen = Number(probe.headers.get("content-length") || 0);
+    if (probe.body && totalLen > 0) {
+      const reader = probe.body.getReader();
+      const chunks = [];
+      let received = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.byteLength;
+        st.textContent = `Loading… ${Math.min(100, Math.round((received / totalLen) * 100))}%`;
+      }
+      const blob = new Blob(chunks, { type: "application/zip" });
+      return createFileSource(new File([blob], url, { lastModified: 0 }));
+    }
+
+    const blob = await probe.blob();
+    return createFileSource(new File([blob], url, { lastModified: 0 }));
+  }
+
+  async function readZipIndex(src) {
+    const tailLen = Math.min(src.size, 70000);
+    const t = new DataView(await src.read(src.size - tailLen, src.size - 1));
+
+    let e = t.byteLength - 22;
+    while (e >= 0 && t.getUint32(e, true) !== 0x06054b50) e--;
+    if (e < 0) throw new Error("Invalid .zip archive");
+
+    let total = t.getUint16(e + 10, true);
+    let cdSize = t.getUint32(e + 12, true);
+    let cdOff = t.getUint32(e + 16, true);
+
+    if (e >= 20 && t.getUint32(e - 20, true) === 0x07064b50) {
+      const a = Number(t.getBigUint64(e - 12, true));
+      const z = new DataView(await src.read(a, a + 55));
+      total = Number(z.getBigUint64(32, true));
+      cdSize = Number(z.getBigUint64(40, true));
+      cdOff = Number(z.getBigUint64(48, true));
+    }
+
+    const buf = await src.read(cdOff, cdOff + cdSize - 1);
+    const d = new DataView(buf);
+    const dec = new TextDecoder();
+
+    const o = [], c = [], m = [], l = [], mt = [];
+    let p = 0;
+
+    for (let i = 0; i < total && p + 46 <= d.byteLength; i++) {
+      if (d.getUint32(p, true) !== 0x02014b50) break;
+      const me = d.getUint16(p + 10, true);
+      const us = d.getUint32(p + 24, true);
+      let cs = d.getUint32(p + 20, true);
+      let lo = d.getUint32(p + 42, true);
+      const n = d.getUint16(p + 28, true);
+      const ex = d.getUint16(p + 30, true);
+      const cm = d.getUint16(p + 32, true);
+
+      if (cs === 0xFFFFFFFF || lo === 0xFFFFFFFF || us === 0xFFFFFFFF) {
+        let q = p + 46 + n;
+        const end = q + ex;
+        while (q + 4 <= end) {
+          const id = d.getUint16(q, true);
+          const sz = d.getUint16(q + 2, true);
+          if (id === 1) {
+            let k = q + 4;
+            if (us === 0xFFFFFFFF) k += 8;
+            if (cs === 0xFFFFFFFF) { cs = Number(d.getBigUint64(k, true)); k += 8; }
+            if (lo === 0xFFFFFFFF) lo = Number(d.getBigUint64(k, true));
+          }
+          q += 4 + sz;
+        }
+      }
+
+      const name = dec.decode(new Uint8Array(buf, p + 46, n));
+      const base = name.split("/").pop();
+      const mm = EXT.exec(base);
+
+      if (mm && !name.startsWith("__MACOSX") && !base.startsWith("._") && !name.endsWith("/")) {
+        o.push(lo); c.push(cs); m.push(me); l.push(n); mt.push(MIME[mm[1].toLowerCase()]);
+      }
+      p += 46 + n + ex + cm;
+    }
+
+    if (!o.length) throw new Error("No supported images found in .zip");
+
+    N = o.length;
+    off = Float64Array.from(o);
+    csz = Float64Array.from(c);
+    meth = Uint8Array.from(m);
+    nlen = Uint16Array.from(l);
+    mime = mt;
+  }
+
+  /* ===== IndexedDB Persistent Storage ===== */
+  let dbPromise = null;
+  function getDB() {
+    if (!dbPromise) {
+      dbPromise = new Promise((res, rej) => {
+        const r = indexedDB.open("logowall_instant_v2", 1);
+        r.onupgradeneeded = () => {
+          const db = r.result;
+          if (!db.objectStoreNames.contains("tiles")) db.createObjectStore("tiles");
+        };
+        r.onsuccess = () => res(r.result);
+        r.onerror = () => rej(r.error);
+      });
+    }
+    return dbPromise;
+  }
+
+  async function idbGet(store, key) {
+    try {
+      const db = await getDB();
+      return await new Promise(res => {
+        const q = db.transaction(store).objectStore(store).get(key);
+        q.onsuccess = () => res(q.result);
+        q.onerror = () => res(null);
+      });
+    } catch { return null; }
+  }
+
+  async function idbPut(store, key, val) {
+    try {
+      const db = await getDB();
+      return await new Promise(res => {
+        const tx = db.transaction(store, "readwrite");
+        tx.objectStore(store).put(val, key);
+        tx.oncomplete = () => res(true);
+        tx.onerror = () => res(false);
+      });
+    } catch { return false; }
+  }
+
+  async function idbGetKeysInRange(store, prefix) {
+    try {
+      const db = await getDB();
+      return await new Promise(res => {
+        const range = IDBKeyRange.bound(prefix, prefix + "\uffff");
+        const q = db.transaction(store).objectStore(store).getAllKeys(range);
+        q.onsuccess = () => res(q.result || []);
+        q.onerror = () => res([]);
+      });
+    } catch { return []; }
+  }
+
+  /* ===== Instant Layout ===== */
+  function buildInstantLayout() {
+    const G = CONFIG.GAP;
+    X = new Float32Array(N);
+    Y = new Float32Array(N);
+    W = new Uint16Array(N);
+    H = new Uint16Array(N);
+
+    const arRand = mulberry32(0x517CC1B7 ^ N);
+    const ar = new Float32Array(N);
+    let estArea = 0;
+    const avgTargetH = (CONFIG.BASE_ROW_MIN + CONFIG.BASE_ROW_MAX) * 0.5;
+
+    for (let i = 0; i < N; i++) {
+      const r = arRand();
+      let ratio;
+      if (r < 0.55) ratio = 0.92 + arRand() * 0.22;
+      else if (r < 0.82) ratio = 1.15 + arRand() * 0.55;
+      else ratio = 0.72 + arRand() * 0.22;
+      ar[i] = ratio;
+      estArea += (avgTargetH * ratio + G) * (avgTargetH + G);
+    }
+
+    const targetAspect = vw / Math.max(1, vh);
+    let candidateW = Math.max(400, Math.round(Math.sqrt(estArea * targetAspect)));
+
+    function packRows(targetW) {
+      const rand = mulberry32(0x9E3779B9 ^ N);
+      rowY = [];
+      rowS = [];
+      minSide = 140;
+
+      let y = 0, i = 0;
+      while (i < N) {
+        const r = rand();
+        let targetH;
+        if (r < 0.40) targetH = CONFIG.BASE_ROW_MIN + rand() * 45;
+        else if (r < 0.80) targetH = 130 + rand() * 55;
+        else targetH = 185 + rand() * (CONFIG.BASE_ROW_MAX - 185);
+
+        const rowStart = i;
+        let sumAR = 0, count = 0;
+
+        while (i < N) {
+          sumAR += ar[i];
+          count++;
+          i++;
+          if (sumAR * targetH + (count - 1) * G >= targetW) break;
+        }
+
+        const availW = Math.max(10, targetW - (count - 1) * G);
+        let rowH = Math.round(availW / sumAR);
+        if (i === N && rowH > targetH * 1.45 && count > 1) rowH = Math.round(targetH);
+        rowH = Math.max(24, rowH);
+
+        rowY.push(y);
+        rowS.push(rowStart);
+
+        let x = 0;
+        for (let j = rowStart; j < i; j++) {
+          const w = (j === i - 1 && (i < N || sumAR * rowH >= availW * 0.9))
+            ? Math.max(10, targetW - x)
+            : Math.max(10, Math.round(ar[j] * rowH));
+          X[j] = x; Y[j] = y; W[j] = w; H[j] = rowH;
+          minSide = Math.min(minSide, w, rowH);
+          x += w + G;
+        }
+        y += rowH + G;
+      }
+
+      rowS.push(N);
+      return Math.max(100, y - G);
+    }
+
+    worldH = packRows(candidateW);
+    const actualAspect = candidateW / worldH;
+    if (Math.abs(actualAspect - targetAspect) / targetAspect > 0.015) {
+      candidateW = Math.max(400, Math.round(candidateW * Math.sqrt(targetAspect / actualAspect)));
+      worldH = packRows(candidateW);
+    }
+    worldW = candidateW;
+    pitchW = worldW + G;
+    pitchH = worldH + G;
+  }
+
+  /* ===== Image Decoding (Folder HTTP / Folder Local / ZIP) ===== */
+  async function decodeBlobAsBitmap(blob, isSvg) {
+    if (isSvg) {
+      const img = new Image();
+      const url = URL.createObjectURL(blob);
+      img.src = url;
+      try { await img.decode(); } finally { URL.revokeObjectURL(url); }
+      return img;
+    }
+    return createImageBitmap(blob);
+  }
+
+  async function loadSingleFolderImage(i) {
+    if (sourceMode === "folder_local") {
+      const f = localFiles[i];
+      if (!f) return null;
+      const isSvg = f.name.toLowerCase().endsWith(".svg");
+      return decodeBlobAsBitmap(f, isSvg);
+    }
+    if (sourceMode === "folder_http") {
+      const fname = folderNames[i];
+      if (!fname) return null;
+      const url = folderBaseUrl + fname.split("/").map(encodeURIComponent).join("/");
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      return decodeBlobAsBitmap(blob, fname.toLowerCase().endsWith(".svg"));
+    }
+    return null;
+  }
+
+  async function decodeZipImage(i, u8, p) {
+    if (p < 0 || p + 30 > u8.length) throw new Error("Out of range");
+    const dv = new DataView(u8.buffer, u8.byteOffset);
+    const nl = dv.getUint16(p + 26, true);
+    const el = dv.getUint16(p + 28, true);
+    const s = p + 30 + nl + el;
+    const data = u8.subarray(s, Math.min(u8.length, s + csz[i]));
+
+    let blob;
+    if (meth[i] !== 8) {
+      blob = new Blob([data], { type: mime[i] });
+    } else {
+      const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+      const rawBlob = await new Response(stream).blob();
+      blob = rawBlob.slice(0, rawBlob.size, mime[i]);
+    }
+    return decodeBlobAsBitmap(blob, mime[i] === "image/svg+xml");
+  }
+
+  function drawFittedImage(targetCtx, bm, dx, dy, dw, dh) {
+    targetCtx.fillStyle = "#FFFFFF";
+    targetCtx.fillRect(dx, dy, dw, dh);
+
+    const bw = bm.width || 1, bh = bm.height || 1;
+    const imgRatio = bw / bh;
+    const boxRatio = dw / dh;
+    const mismatch = Math.max(imgRatio / boxRatio, boxRatio / imgRatio);
+
+    if (mismatch <= 1.28) {
+      let sw, sh, sx, sy;
+      if (imgRatio > boxRatio) {
+        sh = bh; sw = sh * boxRatio;
+        sx = (bw - sw) * 0.5; sy = 0;
+      } else {
+        sw = bw; sh = sw / boxRatio;
+        sx = 0; sy = (bh - sh) * 0.5;
+      }
+      targetCtx.drawImage(bm, sx, sy, sw, sh, dx, dy, dw, dh);
+    } else {
+      const pad = Math.min(dw, dh) * 0.04;
+      const maxW = Math.max(1, dw - pad * 2);
+      const maxH = Math.max(1, dh - pad * 2);
+      const scale = Math.min(maxW / bw, maxH / bh);
+      const fw = bw * scale;
+      const fh = bh * scale;
+      targetCtx.drawImage(bm, dx + (dw - fw) * 0.5, dy + (dh - fh) * 0.5, fw, fh);
+    }
+  }
+
+  /* ===== Persistent Tile Pyramid & Live Crisp Cache ===== */
+  let tileCols = 0, tileRows = 0, totalSectors = 0;
+  let sectorBoxes = [];
+  let itemSectors = [];
+  let sectorDoneCount = null;
+  let cachedSectorSet = new Set();
+  let bakedBoxes = null;
+  let inFlight = new Set();
+  let bakedTotal = 0;
+
+  let shuffledSectors = [];
+  let randomSectorCursor = 0;
+
+  let ovCanvas = null, ovCtx = null, ovScale = 1, ovDirty = false;
+  const activeSectorCanvases = new Map();
+  const sectorBitmaps = new Map();
+  const sectorIdbLoading = new Set();
+
+  const hiResCache = new Map();
+  const hiResPending = new Set();
+
+  let layoutPrefix = "";
+  let workersActive = 0;
+  let sessionToken = 0;
+
+  function canvasToWebpBlob(canvasEl, quality = 0.86) {
+    return new Promise(res => {
+      canvasEl.toBlob(blob => {
+        if (blob) res(blob);
+        else canvasEl.toBlob(b2 => res(b2), "image/jpeg", quality);
+      }, "image/webp", quality);
+    });
+  }
+
+  function putSectorBitmap(sid, bm) {
+    sectorBitmaps.set(sid, bm);
+    if (sectorBitmaps.size > CONFIG.MAX_SECTOR_RAM) {
+      const oldestKey = sectorBitmaps.keys().next().value;
+      const oldBm = sectorBitmaps.get(oldestKey);
+      if (oldBm && oldBm.close) oldBm.close();
+      sectorBitmaps.delete(oldestKey);
+    }
+  }
+
+  function putHiResBitmap(i, bm) {
+    hiResCache.set(i, bm);
+    if (hiResCache.size > CONFIG.MAX_HIRES_RAM) {
+      const oldestKey = hiResCache.keys().next().value;
+      const oldBm = hiResCache.get(oldestKey);
+      if (oldBm && oldBm.close) oldBm.close();
+      hiResCache.delete(oldestKey);
+    }
+  }
+
+  function getOrCreateActiveSector(sid) {
+    let entry = activeSectorCanvases.get(sid);
+    if (entry) return entry;
+
+    const sc = sid % tileCols;
+    const sr = Math.floor(sid / tileCols);
+    const sx = sc * CONFIG.TILE_SIZE;
+    const sy = sr * CONFIG.TILE_SIZE;
+    const sw = Math.min(CONFIG.TILE_SIZE, worldW - sx);
+    const sh = Math.min(CONFIG.TILE_SIZE, worldH - sy);
+
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, sw);
+    c.height = Math.max(1, sh);
+    const cctx = c.getContext("2d", { alpha: false });
+    cctx.fillStyle = "#FBF6E6";
+    cctx.fillRect(0, 0, c.width, c.height);
+
+    const list = sectorBoxes[sid];
+    for (let k = 0; k < list.length; k++) {
+      const i = list[k];
+      cctx.fillStyle = (i & 1) ? "#FFFFFF" : "#F5EED8";
+      cctx.fillRect(X[i] - sx, Y[i] - sy, W[i], H[i]);
+    }
+
+    entry = { canvas: c, ctx: cctx, sx, sy };
+    activeSectorCanvases.set(sid, entry);
+    return entry;
+  }
+
+  async function finalizeSector(sid, token) {
+    const entry = activeSectorCanvases.get(sid);
+    if (!entry) return;
+    activeSectorCanvases.delete(sid);
+
+    try {
+      const bm = await createImageBitmap(entry.canvas);
+      if (token !== sessionToken) { bm.close(); return; }
+      putSectorBitmap(sid, bm);
+      cachedSectorSet.add(sid);
+      redraw();
+
+      const blob = await canvasToWebpBlob(entry.canvas, 0.85);
+      if (blob && token === sessionToken) {
+        await idbPut("tiles", `${layoutPrefix}s_${sid}`, blob);
+      }
+    } catch {}
+  }
+
+  function paintImageIntoLayers(i, bm, token) {
+    if (bakedBoxes[i]) return;
+    bakedBoxes[i] = 1;
+    bakedTotal++;
+
+    if (bm) {
+      drawFittedImage(ovCtx, bm, X[i] * ovScale, Y[i] * ovScale, Math.max(1, W[i] * ovScale), Math.max(1, H[i] * ovScale));
+      ovDirty = true;
+    }
+
+    const sids = itemSectors[i];
+    for (let k = 0; k < sids.length; k++) {
+      const sid = sids[k];
+      if (cachedSectorSet.has(sid)) continue;
+
+      const sec = getOrCreateActiveSector(sid);
+      if (bm) {
+        drawFittedImage(sec.ctx, bm, X[i] - sec.sx, Y[i] - sec.sy, W[i], H[i]);
+      }
+
+      sectorDoneCount[sid]++;
+      if (sectorDoneCount[sid] >= sectorBoxes[sid].length) {
+        finalizeSector(sid, token);
+      }
+    }
+  }
+
+  async function initPersistence(token) {
+    const T = CONFIG.TILE_SIZE;
+    tileCols = Math.ceil(worldW / T);
+    tileRows = Math.ceil(worldH / T);
+    totalSectors = tileCols * tileRows;
+
+    sectorBoxes = Array.from({ length: totalSectors }, () => []);
+    itemSectors = Array.from({ length: N }, () => []);
+    sectorDoneCount = new Uint32Array(totalSectors);
+    bakedBoxes = new Uint8Array(N);
+    cachedSectorSet.clear();
+    activeSectorCanvases.clear();
+    for (const bm of sectorBitmaps.values()) { if (bm && bm.close) bm.close(); }
+    sectorBitmaps.clear();
+    for (const bm of hiResCache.values()) { if (bm && bm.close) bm.close(); }
+    hiResCache.clear();
+    inFlight.clear();
+    hiResPending.clear();
+
+    for (let i = 0; i < N; i++) {
+      const c0 = Math.floor(X[i] / T);
+      const c1 = Math.floor((X[i] + W[i] - 0.01) / T);
+      const r0 = Math.floor(Y[i] / T);
+      const r1 = Math.floor((Y[i] + H[i] - 0.01) / T);
+      for (let r = r0; r <= r1; r++) {
+        for (let c = c0; c <= c1; c++) {
+          const sid = r * tileCols + c;
+          sectorBoxes[sid].push(i);
+          itemSectors[i].push(sid);
+        }
+      }
+    }
+
+    shuffledSectors = Array.from({ length: totalSectors }, (_, idx) => idx);
+    for (let i = shuffledSectors.length - 1; i > 0; i--) {
+      const j = Math.floor(trueRandom() * (i + 1));
+      const tmp = shuffledSectors[i];
+      shuffledSectors[i] = shuffledSectors[j];
+      shuffledSectors[j] = tmp;
+    }
+    randomSectorCursor = 0;
+
+    layoutPrefix = `${sourceId}:${worldW}x${worldH}:`;
+
+    ovScale = Math.min(1, CONFIG.OVERVIEW_MAX / Math.max(worldW, worldH));
+    ovCanvas = document.createElement("canvas");
+    ovCanvas.width = Math.max(1, Math.round(worldW * ovScale));
+    ovCanvas.height = Math.max(1, Math.round(worldH * ovScale));
+    ovCtx = ovCanvas.getContext("2d", { alpha: false });
+    ovCtx.imageSmoothingEnabled = true;
+    ovCtx.imageSmoothingQuality = "medium";
+
+    const ovBlob = await idbGet("tiles", `${layoutPrefix}ov`);
+    if (token !== sessionToken) return;
+
+    if (ovBlob) {
+      try {
+        const ovBm = await createImageBitmap(ovBlob);
+        ovCtx.drawImage(ovBm, 0, 0, ovCanvas.width, ovCanvas.height);
+        ovBm.close();
+      } catch {
+        drawOverviewFallback();
+      }
+    } else {
+      drawOverviewFallback();
+    }
+
+    const keys = await idbGetKeysInRange("tiles", `${layoutPrefix}s_`);
+    if (token !== sessionToken) return;
+
+    const prefixLen = `${layoutPrefix}s_`.length;
+    for (const k of keys) {
+      const sid = parseInt(String(k).slice(prefixLen), 10);
+      if (!Number.isNaN(sid) && sid >= 0 && sid < totalSectors) {
+        cachedSectorSet.add(sid);
+        sectorDoneCount[sid] = sectorBoxes[sid].length;
+      }
+    }
+
+    bakedTotal = 0;
+    for (let i = 0; i < N; i++) {
+      const sids = itemSectors[i];
+      let allCached = true;
+      for (let k = 0; k < sids.length; k++) {
+        if (!cachedSectorSet.has(sids[k])) { allCached = false; break; }
+      }
+      if (allCached) {
+        bakedBoxes[i] = 1;
+        bakedTotal++;
+      }
+    }
+
+    updateStatus();
+  }
+
+  function drawOverviewFallback() {
+    ovCtx.fillStyle = "#FBF6E6";
+    ovCtx.fillRect(0, 0, ovCanvas.width, ovCanvas.height);
+    for (let i = 0; i < N; i++) {
+      ovCtx.fillStyle = (i & 1) ? "#FFFFFF" : "#F5EED8";
+      ovCtx.fillRect(X[i] * ovScale, Y[i] * ovScale, Math.max(1, W[i] * ovScale), Math.max(1, H[i] * ovScale));
+    }
+  }
+
+  function updateStatus() {
+    if (!N) return;
+    const infStr = infinityMode ? " • ∞" : "";
+    if (bakedTotal >= N) {
+      st.textContent = `${N.toLocaleString("en-US")}${infStr}`;
+    } else {
+      const pct = Math.round((bakedTotal / N) * 100);
+      st.textContent = `${N.toLocaleString("en-US")} • ${pct}%${infStr}`;
+    }
+  }
+
+  setInterval(async () => {
+    if (!ovDirty || !ovCanvas || !layoutPrefix) return;
+    ovDirty = false;
+    const token = sessionToken;
+    try {
+      const blob = await canvasToWebpBlob(ovCanvas, 0.85);
+      if (blob && token === sessionToken) {
+        await idbPut("tiles", `${layoutPrefix}ov`, blob);
+      }
+    } catch {}
+  }, 3500);
+
+  /* ===== Extraction Scheduler (Works for Both Folder & ZIP) ===== */
+  function getVisibleSectorsFor(vx, vy, vs) {
+    const T = CONFIG.TILE_SIZE;
+    const x0 = vx, y0 = vy, x1 = vx + vw / vs, y1 = vy + vh / vs;
+    const kx0 = infinityMode ? Math.floor(x0 / pitchW) : 0;
+    const kx1 = infinityMode ? Math.floor(x1 / pitchW) : 0;
+    const ky0 = infinityMode ? Math.floor(y0 / pitchH) : 0;
+    const ky1 = infinityMode ? Math.floor(y1 / pitchH) : 0;
+
+    const set = new Set();
+    for (let ky = ky0; ky <= ky1; ky++) {
+      for (let kx = kx0; kx <= kx1; kx++) {
+        const ox = kx * pitchW, oy = ky * pitchH;
+        const lx0 = Math.max(0, x0 - ox), ly0 = Math.max(0, y0 - oy);
+        const lx1 = Math.min(worldW, x1 - ox), ly1 = Math.min(worldH, y1 - oy);
+        if (lx1 < 0 || ly1 < 0 || lx0 > worldW || ly0 > worldH) continue;
+
+        const c0 = Math.max(0, Math.floor(lx0 / T));
+        const c1 = Math.min(tileCols - 1, Math.floor(lx1 / T));
+        const r0 = Math.max(0, Math.floor(ly0 / T));
+        const r1 = Math.min(tileRows - 1, Math.floor(ly1 / T));
+        for (let r = r0; r <= r1; r++) {
+          for (let c = c0; c <= c1; c++) {
+            set.add(r * tileCols + c);
+          }
+        }
+      }
+    }
+    return [...set];
+  }
+
+  function buildRunFromIndices(candidates) {
+    if (sourceMode !== "zip") {
+      // Folder mode: direct parallel batch (no byte-contiguity constraint)
+      const unique = [];
+      const seen = new Set();
+      for (let k = 0; k < candidates.length && unique.length < CONFIG.FOLDER_BATCH_SIZE; k++) {
+        const idx = candidates[k];
+        if (!seen.has(idx)) { seen.add(idx); unique.push(idx); }
+      }
+      return unique;
+    }
+
+    const batch = [];
+    let bytes = 0;
+    candidates.sort((a, b) => a - b);
+    for (let k = 0; k < candidates.length; k++) {
+      const i = candidates[k];
+      if (batch.length > 0 && (i - batch[batch.length - 1] > 8 || bytes > CONFIG.ZIP_RUN_BYTES || batch.length >= CONFIG.ZIP_RUN_MAX_ITEMS)) {
+        break;
+      }
+      if (batch.length === 0 || i !== batch[batch.length - 1]) {
+        batch.push(i);
+        bytes += csz[i];
+      }
+    }
+    return batch;
+  }
+
+  function pickNextBatch() {
+    let vx = view.x, vy = view.y, vs = view.s;
+    if (animTarget) {
+      vs = animTarget.s1;
+      vx = animTarget.p3.x - (vw / vs) / 2;
+      vy = animTarget.p3.y - (vh / vs) / 2;
+    }
+
+    const visSectors = getVisibleSectorsFor(vx, vy, vs);
+    if (visSectors.length <= 24) {
+      const candidates = [];
+      for (const sid of visSectors) {
+        if (cachedSectorSet.has(sid)) continue;
+        const sb = sectorBoxes[sid];
+        for (let k = 0; k < sb.length; k++) {
+          const idx = sb[k];
+          if (!bakedBoxes[idx] && !inFlight.has(idx)) candidates.push(idx);
+        }
+      }
+      if (candidates.length > 0) return buildRunFromIndices(candidates);
+    }
+
+    let tries = 0;
+    while (tries < shuffledSectors.length) {
+      const sid = shuffledSectors[randomSectorCursor % shuffledSectors.length];
+      randomSectorCursor++;
+      tries++;
+      if (cachedSectorSet.has(sid)) continue;
+
+      const sb = sectorBoxes[sid];
+      const candidates = [];
+      for (let k = 0; k < sb.length; k++) {
+        const idx = sb[k];
+        if (!bakedBoxes[idx] && !inFlight.has(idx)) candidates.push(idx);
+      }
+      if (candidates.length > 0) return buildRunFromIndices(candidates);
+    }
+
+    const stray = [];
+    for (let i = 0; i < N && stray.length < CONFIG.FOLDER_BATCH_SIZE; i++) {
+      if (!bakedBoxes[i] && !inFlight.has(i)) stray.push(i);
+    }
+    return stray.length ? buildRunFromIndices(stray) : [];
+  }
+
+  async function processBatch(batch, token) {
+    batch.forEach(i => inFlight.add(i));
+
+    try {
+      if (sourceMode === "zip") {
+        const a = batch[0], b = batch[batch.length - 1], base = off[a];
+        const u8 = new Uint8Array(await zipSource.read(base, off[b] + 30 + nlen[b] + csz[b] + 4096));
+        await Promise.all(batch.map(async i => {
+          if (token !== sessionToken) return;
+          let bm = null;
+          try { bm = await decodeZipImage(i, u8, off[i] - base); } catch {}
+          if (token !== sessionToken) { if (bm && bm.close) bm.close(); return; }
+          paintImageIntoLayers(i, bm, token);
+          if (bm) {
+            if (view.s >= CONFIG.HIRES_ZOOM_THRESHOLD && isBoxVisible(i)) putHiResBitmap(i, bm);
+            else if (bm.close) bm.close();
+          }
+        }));
+      } else {
+        await Promise.all(batch.map(async i => {
+          if (token !== sessionToken) return;
+          let bm = null;
+          try { bm = await loadSingleFolderImage(i); } catch {}
+          if (token !== sessionToken) { if (bm && bm.close) bm.close(); return; }
+          paintImageIntoLayers(i, bm, token);
+          if (bm) {
+            if (view.s >= CONFIG.HIRES_ZOOM_THRESHOLD && isBoxVisible(i)) putHiResBitmap(i, bm);
+            else if (bm.close) bm.close();
+          }
+        }));
+      }
+    } catch {
+      if (token === sessionToken) {
+        batch.forEach(i => paintImageIntoLayers(i, null, token));
+      }
+    }
+
+    batch.forEach(i => inFlight.delete(i));
+    if (token === sessionToken) {
+      updateStatus();
+      redraw();
+      if (bakedTotal >= N && ovDirty) {
+        ovDirty = false;
+        canvasToWebpBlob(ovCanvas, 0.86).then(blob => {
+          if (blob && token === sessionToken) idbPut("tiles", `${layoutPrefix}ov`, blob);
+        });
+      }
+    }
+  }
+
+  function pumpWorkers(token) {
+    if (token !== sessionToken || !N || bakedTotal >= N) return;
+    if (ptr.size > 0 || inertia.active) return;
+    while (workersActive < CONFIG.WORKER_CONCURRENCY) {
+      const batch = pickNextBatch();
+      if (batch.length === 0) break;
+      workersActive++;
+      processBatch(batch, token).finally(() => {
+        workersActive--;
+        pumpWorkers(token);
+      });
+    }
+  }
+
+  /* ===== High-Res Close-Up Loader (>1.35x) ===== */
+  async function fetchHiResBatch(indices, token) {
+    indices.forEach(i => hiResPending.add(i));
+    try {
+      if (sourceMode === "zip") {
+        const a = indices[0], b = indices[indices.length - 1], base = off[a];
+        const u8 = new Uint8Array(await zipSource.read(base, off[b] + 30 + nlen[b] + csz[b] + 4096));
+        await Promise.all(indices.map(async i => {
+          if (token !== sessionToken) return;
+          try {
+            const bm = await decodeZipImage(i, u8, off[i] - base);
+            if (token === sessionToken && bm) putHiResBitmap(i, bm);
+            else if (bm && bm.close) bm.close();
+          } catch {}
+        }));
+      } else {
+        await Promise.all(indices.map(async i => {
+          if (token !== sessionToken) return;
+          try {
+            const bm = await loadSingleFolderImage(i);
+            if (token === sessionToken && bm) putHiResBitmap(i, bm);
+            else if (bm && bm.close) bm.close();
+          } catch {}
+        }));
+      }
+    } catch {}
+    indices.forEach(i => hiResPending.delete(i));
+    if (token === sessionToken) redraw();
+  }
+
+  function loadSectorFromIdb(sid, token) {
+    if (sectorIdbLoading.has(sid)) return;
+    sectorIdbLoading.add(sid);
+    idbGet("tiles", `${layoutPrefix}s_${sid}`).then(async blob => {
+      sectorIdbLoading.delete(sid);
+      if (!blob || token !== sessionToken) return;
+      try {
+        const bm = await createImageBitmap(blob);
+        if (token === sessionToken) {
+          putSectorBitmap(sid, bm);
+          redraw();
+        } else if (bm.close) bm.close();
+      } catch {}
+    });
+  }
+
+  /* ===== Zoom Bounds & Clamping ===== */
+  function getZoomBounds() {
+    const baseMin = Math.min(vw / worldW, vh / worldH);
+    const minZoom = infinityMode ? baseMin * 0.25 : baseMin;
+    const refDim = Math.max(45, minSide);
+    const maxZoom = Math.max(baseMin * 3, TARGET_15CM_PX / refDim);
+    return { minZoom, baseMin, maxZoom };
+  }
+
+  function getZoomAtRatio(ratio) {
+    const { baseMin, maxZoom } = getZoomBounds();
+    return baseMin * Math.pow(maxZoom / baseMin, ratio);
+  }
+
+  function clampCoords(x, y, s) {
+    if (infinityMode) return { x, y };
+    const viewW = vw / s;
+    const viewH = vh / s;
+    let cx = x, cy = y;
+    if (worldW <= viewW) cx = (worldW - viewW) / 2;
+    else cx = Math.max(0, Math.min(worldW - viewW, cx));
+    if (worldH <= viewH) cy = (worldH - viewH) / 2;
+    else cy = Math.max(0, Math.min(worldH - viewH, cy));
+    return { x: cx, y: cy };
+  }
+
+  function clamp() {
+    if (!N) return;
+    const { minZoom, maxZoom } = getZoomBounds();
+    view.s = Math.max(minZoom, Math.min(maxZoom, view.s));
+    if (infinityMode) {
+      if (!animTarget) {
+        view.x = posMod(view.x, pitchW);
+        view.y = posMod(view.y, pitchH);
+      }
+    } else {
+      const c = clampCoords(view.x, view.y, view.s);
+      view.x = c.x;
+      view.y = c.y;
+    }
+  }
+
+  function isBoxVisible(i) {
+    const x0 = view.x, y0 = view.y, x1 = x0 + vw / view.s, y1 = y0 + vh / view.s;
+    const kx0 = infinityMode ? Math.floor(x0 / pitchW) : 0;
+    const kx1 = infinityMode ? Math.floor(x1 / pitchW) : 0;
+    const ky0 = infinityMode ? Math.floor(y0 / pitchH) : 0;
+    const ky1 = infinityMode ? Math.floor(y1 / pitchH) : 0;
+    for (let ky = ky0; ky <= ky1; ky++) {
+      for (let kx = kx0; kx <= kx1; kx++) {
+        const bx = X[i] + kx * pitchW, by = Y[i] + ky * pitchH;
+        if (bx + W[i] >= x0 && bx <= x1 && by + H[i] >= y0 && by <= y1) return true;
+      }
+    }
+    return false;
+  }
+
+  function lastRowLE(y) {
+    let lo = 0, hi = rowY.length - 1;
+    while (lo < hi) {
+      const m = (lo + hi + 1) >> 1;
+      if (rowY[m] <= y) lo = m;
+      else hi = m - 1;
+    }
+    return lo;
+  }
+
+  /* ===== Professional Random Picker ===== */
+  const recentPicked = [];
+  const recentSet = new Set();
+  let lastPickedIdx = -1;
+
+  function recordPicked(idx) {
+    lastPickedIdx = idx;
+    recentPicked.push(idx);
+    recentSet.add(idx);
+    const maxHist = Math.min(250, Math.max(10, Math.floor(N * 0.45)));
+    while (recentPicked.length > maxHist) {
+      recentSet.delete(recentPicked.shift());
+    }
+  }
+
+  function isSafe256Zone(idx) {
+    const m = CONFIG.SAFE_MARGIN_PX;
+    if (worldW > m * 3 && (X[idx] < m || X[idx] + W[idx] > worldW - m)) return false;
+    if (worldH > m * 3 && (Y[idx] < m || Y[idx] + H[idx] > worldH - m)) return false;
+    return true;
+  }
+
+  function pickRandomLogo(minDistFromCurrent = CONFIG.SAFE_MARGIN_PX) {
+    const curCx = posMod(view.x + (vw / view.s) / 2, pitchW);
+    const curCy = posMod(view.y + (vh / view.s) / 2, pitchH);
+    const prevCx = lastPickedIdx >= 0 ? X[lastPickedIdx] + W[lastPickedIdx] / 2 : curCx;
+    const prevCy = lastPickedIdx >= 0 ? Y[lastPickedIdx] + H[lastPickedIdx] / 2 : curCy;
+
+    let fallback = Math.floor(trueRandom() * N);
+
+    for (let attempt = 0; attempt < 80; attempt++) {
+      const cand = Math.floor(trueRandom() * N);
+      if (recentSet.has(cand)) continue;
+      if (!isSafe256Zone(cand)) continue;
+
+      const cx = X[cand] + W[cand] / 2;
+      const cy = Y[cand] + H[cand] / 2;
+      const distCur = Math.hypot(cx - curCx, cy - curCy);
+      const distPrev = Math.hypot(cx - prevCx, cy - prevCy);
+
+      if (distCur > minDistFromCurrent && distPrev > CONFIG.SAFE_MARGIN_PX) {
+        recordPicked(cand);
+        return cand;
+      }
+      fallback = cand;
+    }
+
+    recordPicked(fallback);
+    return fallback;
+  }
+
+  /* ===== Synchronized Diagonal 3-Streak Shine + Border ===== */
+  function smoothstep(edge0, edge1, x) {
+    const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+    return t * t * (3 - 2 * t);
+  }
+
+  function drawShiningBorder(ox, oy, s, now) {
+    if (!highlight) return false;
+    const elapsed = now - highlight.startTime;
+    if (elapsed < 0) return true;
+    if (elapsed >= highlight.duration) {
+      highlight = null;
+      return false;
+    }
+
+    const p = elapsed / highlight.duration;
+    const fadeIn = smoothstep(0.0, 0.14, p);
+    const fadeOut = 1 - smoothstep(0.76, 1.0, p);
+    const alpha = fadeIn * fadeOut;
+    if (alpha <= 0.004) return true;
+
+    const i = highlight.idx;
+    const bx = X[i] + ox, by = Y[i] + oy, bw = W[i], bh = H[i];
+    const isRed = highlight.theme === "red";
+
+    const sweep = -0.35 + p * 1.70;
+    const addStop = (grad, pos, color) => grad.addColorStop(Math.max(0, Math.min(1, pos)), color);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(bx, by, bw, bh);
+    ctx.clip();
+
+    const shineGrad = ctx.createLinearGradient(bx + bw, by, bx, by + bh);
+    const sc = isRed ? "255, 225, 228" : "255, 255, 255";
+    const a1 = (0.30 * alpha).toFixed(3);
+    const a2 = (0.78 * alpha).toFixed(3);
+    const a3 = (0.45 * alpha).toFixed(3);
+
+    addStop(shineGrad, sweep - 0.24, `rgba(${sc}, 0)`);
+    addStop(shineGrad, sweep - 0.16, `rgba(${sc}, ${a1})`);
+    addStop(shineGrad, sweep - 0.11, `rgba(${sc}, 0)`);
+    addStop(shineGrad, sweep - 0.06, `rgba(${sc}, 0)`);
+    addStop(shineGrad, sweep,        `rgba(${sc}, ${a2})`);
+    addStop(shineGrad, sweep + 0.06, `rgba(${sc}, 0)`);
+    addStop(shineGrad, sweep + 0.11, `rgba(${sc}, 0)`);
+    addStop(shineGrad, sweep + 0.15, `rgba(${sc}, ${a3})`);
+    addStop(shineGrad, sweep + 0.22, `rgba(${sc}, 0)`);
+
+    ctx.fillStyle = shineGrad;
+    ctx.fillRect(bx, by, bw, bh);
+    ctx.restore();
+
+    ctx.save();
+    const baseRgb = isRed ? "215, 45, 58" : "202, 158, 62";
+    const midRgb  = isRed ? "245, 78, 92" : "226, 186, 92";
+    const peakRgb = isRed ? "255, 210, 214" : "255, 238, 190";
+    const glowRgb = isRed ? "225, 48, 64" : "218, 174, 76";
+
+    ctx.strokeStyle = `rgba(${baseRgb}, ${(0.36 * alpha).toFixed(3)})`;
+    ctx.lineWidth = Math.max(1, 1.6 / s);
+    ctx.strokeRect(bx, by, bw, bh);
+
+    const borderGrad = ctx.createLinearGradient(bx + bw, by, bx, by + bh);
+    addStop(borderGrad, sweep - 0.22, `rgba(${baseRgb}, ${(0.15 * alpha).toFixed(3)})`);
+    addStop(borderGrad, sweep - 0.07, `rgba(${midRgb}, ${(0.80 * alpha).toFixed(3)})`);
+    addStop(borderGrad, sweep,        `rgba(${peakRgb}, ${(0.98 * alpha).toFixed(3)})`);
+    addStop(borderGrad, sweep + 0.07, `rgba(${midRgb}, ${(0.80 * alpha).toFixed(3)})`);
+    addStop(borderGrad, sweep + 0.22, `rgba(${baseRgb}, ${(0.15 * alpha).toFixed(3)})`);
+
+    ctx.shadowColor = `rgba(${glowRgb}, ${(0.62 * alpha).toFixed(3)})`;
+    ctx.shadowBlur = isRed ? 14 : 9;
+    ctx.strokeStyle = borderGrad;
+    ctx.lineWidth = Math.max(1.4, (isRed ? 2.8 : 2.4) / s);
+    ctx.strokeRect(bx, by, bw, bh);
+    ctx.restore();
+
+    return true;
+  }
+
+  /* ===== Crisp Render Loop ===== */
+  let isRapidMoving = false;
+
+  function drawCrispBoxPlaceholders(ox, oy, lx0, ly0, lx1, ly1) {
+    for (let r = lastRowLE(ly0); r < rowY.length && rowY[r] <= ly1; r++) {
+      let lo = rowS[r], hi = rowS[r + 1] - 1, first = hi + 1;
+      while (lo <= hi) {
+        const m = (lo + hi) >> 1;
+        if (X[m] + W[m] >= lx0) { first = m; hi = m - 1; }
+        else lo = m + 1;
+      }
+      for (let i = first; i < rowS[r + 1] && X[i] <= lx1; i++) {
+        ctx.fillStyle = (i & 1) ? "#FFFFFF" : "#F5EED8";
+        ctx.fillRect(ox + X[i], oy + Y[i], W[i], H[i]);
+      }
+    }
+  }
+
+  function draw() {
+    raf = 0;
+    const now = performance.now();
+    const cs = getComputedStyle(document.documentElement);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = cs.getPropertyValue("--bg");
+    ctx.fillRect(0, 0, vw, vh);
+
+    if (!N || !ovCanvas) return;
+
+    const s = view.s;
+    ctx.setTransform(dpr * s, 0, 0, dpr * s, -view.x * s * dpr, -view.y * s * dpr);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = isRapidMoving ? "medium" : "high";
+
+    const x0 = view.x, y0 = view.y, x1 = x0 + vw / s, y1 = y0 + vh / s;
+    const kx0 = infinityMode ? Math.floor(x0 / pitchW) : 0;
+    const kx1 = infinityMode ? Math.floor(x1 / pitchW) : 0;
+    const ky0 = infinityMode ? Math.floor(y0 / pitchH) : 0;
+    const ky1 = infinityMode ? Math.floor(y1 / pitchH) : 0;
+
+    const T = CONFIG.TILE_SIZE;
+    const missingHi = [];
+    let keepShining = false;
+
+    for (let ky = ky0; ky <= ky1; ky++) {
+      for (let kx = kx0; kx <= kx1; kx++) {
+        const ox = kx * pitchW;
+        const oy = ky * pitchH;
+
+        if (ox + worldW < x0 || ox > x1 || oy + worldH < y0 || oy > y1) continue;
+
+        const lx0 = Math.max(0, x0 - ox), ly0 = Math.max(0, y0 - oy);
+        const lx1 = Math.min(worldW, x1 - ox), ly1 = Math.min(worldH, y1 - oy);
+
+        if (s <= ovScale * 1.15) {
+          ctx.drawImage(ovCanvas, ox, oy, worldW, worldH);
+        } else {
+          const c0 = Math.max(0, Math.floor(lx0 / T));
+          const c1 = Math.min(tileCols - 1, Math.floor(lx1 / T));
+          const r0 = Math.max(0, Math.floor(ly0 / T));
+          const r1 = Math.min(tileRows - 1, Math.floor(ly1 / T));
+
+          let drewCrispFallback = false;
+
+          for (let sr = r0; sr <= r1; sr++) {
+            for (let sc = c0; sc <= c1; sc++) {
+              const sid = sr * tileCols + sc;
+              const sx = sc * T, sy = sr * T;
+              const sw = Math.min(T, worldW - sx), sh = Math.min(T, worldH - sy);
+
+              const bm = sectorBitmaps.get(sid);
+              if (bm) {
+                sectorBitmaps.delete(sid);
+                sectorBitmaps.set(sid, bm);
+                ctx.drawImage(bm, ox + sx, oy + sy, sw, sh);
+              } else {
+                const activeSec = activeSectorCanvases.get(sid);
+                if (activeSec) {
+                  ctx.drawImage(activeSec.canvas, ox + sx, oy + sy, sw, sh);
+                } else {
+                  if (!drewCrispFallback) {
+                    drawCrispBoxPlaceholders(ox, oy, lx0, ly0, lx1, ly1);
+                    drewCrispFallback = true;
+                  }
+                  if (cachedSectorSet.has(sid)) {
+                    loadSectorFromIdb(sid, sessionToken);
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        if (s >= CONFIG.HIRES_ZOOM_THRESHOLD && !isRapidMoving) {
+          for (let r = lastRowLE(ly0); r < rowY.length && rowY[r] <= ly1; r++) {
+            let lo = rowS[r], hi = rowS[r + 1] - 1, first = hi + 1;
+            while (lo <= hi) {
+              const m = (lo + hi) >> 1;
+              if (X[m] + W[m] >= lx0) { first = m; hi = m - 1; }
+              else lo = m + 1;
+            }
+            for (let i = first; i < rowS[r + 1] && X[i] <= lx1; i++) {
+              const bm = hiResCache.get(i);
+              if (bm) {
+                hiResCache.delete(i);
+                hiResCache.set(i, bm);
+                drawFittedImage(ctx, bm, ox + X[i], oy + Y[i], W[i], H[i]);
+              } else if (!hiResPending.has(i) && missingHi.length < 20) {
+                missingHi.push(i);
+              }
+            }
+          }
+        }
+
+        if (highlight) {
+          const hx = ox + X[highlight.idx], hy = oy + Y[highlight.idx];
+          if (hx + W[highlight.idx] >= x0 && hx <= x1 && hy + H[highlight.idx] >= y0 && hy <= y1) {
+            if (drawShiningBorder(ox, oy, s, now)) keepShining = true;
+          }
+        }
+      }
+    }
+
+    if (missingHi.length > 0) {
+      if (sourceMode === "zip") {
+        let run = [], bytes = 0;
+        for (const i of missingHi) {
+          if (run.length && (i - run[run.length - 1] > 6 || bytes > CONFIG.ZIP_RUN_BYTES)) {
+            fetchHiResBatch(run, sessionToken);
+            run = []; bytes = 0;
+          }
+          run.push(i); bytes += csz[i];
+        }
+        if (run.length) fetchHiResBatch(run, sessionToken);
+      } else {
+        fetchHiResBatch(missingHi, sessionToken);
+      }
+    }
+
+    if (keepShining) redraw();
+  }
+
+  function redraw() {
+    if (!raf) raf = requestAnimationFrame(draw);
+  }
+
+  /* ===== Curved Google-Maps Flight + Infinity Cruise + Standard Showcase ===== */
+  let animTarget = null;
+  let animStartTime = 0;
+  let animDuration = 1000;
+  let animCallback = null;
+
+  let lastInteraction = performance.now();
+
+  let infPhase = "idle";
+  let countdownEndTime = 0;
+  let lastCountdownNum = 0;
+  let driftStartTime = 0;
+  let driftLastTime = 0;
+  let driftWorkerTimer = 0;
+  let driftDirX = 1, driftDirY = 0;
+  let driftAngle = 0;
+  let recentAngles = [];
+  let infPauseEndTime = 0;
+  let infLiftStartZoom = 1;
+
+  let stdPhase = "idle";
+  let stdPhaseEndTime = 0;
+  let stdEncoreTimer = null;
+
+  function clearShowcaseTimers() {
+    if (stdEncoreTimer) {
+      clearTimeout(stdEncoreTimer);
+      stdEncoreTimer = null;
+    }
+  }
+
+  function hideCountdown() {
+    lastCountdownNum = 0;
+    driftTimer.classList.remove("show");
+  }
+
+  function updateAutoScrollUI() {
+    autoScrollTag.textContent = autoScrollEnabled ? "ON" : "OFF";
+    autoScrollToggleBtn.classList.toggle("off-state", !autoScrollEnabled);
+    autoScrollToggleBtn.classList.toggle("active", autoScrollEnabled);
+  }
+
+  function markInteraction() {
+    lastInteraction = performance.now();
+    hideCountdown();
+    clearShowcaseTimers();
+    infPhase = "idle";
+    stdPhase = "idle";
+    autoLabel.textContent = infinityMode ? "Auto Tour (∞)" : "Auto Showcase";
+    updateIdleNote();
+  }
+
+  function updateIdleNote() {
+    if (infPhase !== "idle") {
+      idleNote.textContent = "Infinity tour active (0.0001 → 2.0)";
+    } else if (stdPhase !== "idle") {
+      idleNote.textContent = "Auto showcase active (3s / 10s)";
+    } else if (!autoScrollEnabled) {
+      idleNote.textContent = "Auto scroll is OFF (Manual mode)";
+    } else if (infinityMode) {
+      idleNote.textContent = "15s idle → 3-2-1 → ∞ tour (50%)";
+    } else {
+      idleNote.textContent = "Idle → Zoom Out 3s → Logo 10s";
+    }
+  }
+
+  function flyToCenter(targetCx, targetCy, targetS, useCurvedArc = true, fixedMs = null, onDone = null) {
+    if (!N) return 0;
+    const { minZoom, baseMin, maxZoom } = getZoomBounds();
+    const s0 = view.s;
+    const cx0 = view.x + (vw / s0) / 2;
+    const cy0 = view.y + (vh / s0) / 2;
+
+    const s1 = Math.max(minZoom, Math.min(maxZoom, targetS));
+    const clampedTopLeft = clampCoords(targetCx - (vw / s1) / 2, targetCy - (vh / s1) / 2, s1);
+    const cx1 = clampedTopLeft.x + (vw / s1) / 2;
+    const cy1 = clampedTopLeft.y + (vh / s1) / 2;
+
+    const dx = cx1 - cx0;
+    const dy = cy1 - cy0;
+    const dist = Math.hypot(dx, dy);
+    const viewDiag = Math.hypot(vw / Math.min(s0, s1), vh / Math.min(s0, s1));
+
+    let dipDepth = 0;
+    let p1 = { x: cx0 + dx * 0.33, y: cy0 + dy * 0.33 };
+    let p2 = { x: cx0 + dx * 0.67, y: cy0 + dy * 0.67 };
+
+    if (useCurvedArc && dist > viewDiag * 0.45) {
+      const arcZoom = Math.max(baseMin, Math.min(Math.min(s0, s1) * 0.72, Math.min(vw, vh) / (dist * 1.15)));
+      const avgLog = 0.5 * (Math.log(s0) + Math.log(s1));
+      dipDepth = Math.max(0, avgLog - Math.log(arcZoom));
+
+      const px = -dy / dist;
+      const py = dx / dist;
+      const arcOffset = dist * 0.32;
+
+      let sign = trueRandom() < 0.5 ? 1 : -1;
+      if (!infinityMode) {
+        const candPosX = cx0 + dx * 0.70 + px * arcOffset;
+        const candPosY = cy0 + dy * 0.70 + py * arcOffset;
+        const candNegX = cx0 + dx * 0.70 - px * arcOffset;
+        const candNegY = cy0 + dy * 0.70 - py * arcOffset;
+        const scorePos = Math.min(candPosX, worldW - candPosX, candPosY, worldH - candPosY);
+        const scoreNeg = Math.min(candNegX, worldW - candNegX, candNegY, worldH - candNegY);
+        sign = scorePos >= scoreNeg ? 1 : -1;
+      }
+
+      p1 = { x: cx0 + dx * 0.30, y: cy0 + dy * 0.30 };
+      p2 = { x: cx0 + dx * 0.72 + px * arcOffset * sign, y: cy0 + dy * 0.72 + py * arcOffset * sign };
+
+      if (!infinityMode) {
+        p2.x = Math.max(worldW * 0.06, Math.min(worldW * 0.94, p2.x));
+        p2.y = Math.max(worldH * 0.06, Math.min(worldH * 0.94, p2.y));
+      }
+    }
+
+    const distNorm = Math.min(1, dist / Math.max(worldW, worldH));
+    const duration = fixedMs || Math.round(820 + 620 * distNorm);
+
+    animTarget = {
+      p0: { x: cx0, y: cy0 },
+      p1, p2,
+      p3: { x: cx1, y: cy1 },
+      s0, s1, dipDepth
+    };
+    animDuration = duration;
+    animStartTime = performance.now();
+    animCallback = onDone;
+
+    pumpWorkers(sessionToken);
+    requestAnimationFrame(stepAnimation);
+    return duration;
+  }
+
+  function stepAnimation(now) {
+    if (!animTarget) return;
+    isRapidMoving = true;
+    const t = Math.min(1, (now - animStartTime) / animDuration);
+    const ease = 0.5 - 0.5 * Math.cos(Math.PI * t);
+
+    const { minZoom, maxZoom } = getZoomBounds();
+    const logS = (1 - ease) * Math.log(animTarget.s0) + ease * Math.log(animTarget.s1) - animTarget.dipDepth * Math.sin(Math.PI * t);
+    const s = Math.max(minZoom, Math.min(maxZoom, Math.exp(logS)));
+
+    const inv = 1 - ease;
+    const b0 = inv * inv * inv;
+    const b1 = 3 * inv * inv * ease;
+    const b2 = 3 * inv * ease * ease;
+    const b3 = ease * ease * ease;
+
+    const cx = b0 * animTarget.p0.x + b1 * animTarget.p1.x + b2 * animTarget.p2.x + b3 * animTarget.p3.x;
+    const cy = b0 * animTarget.p0.y + b1 * animTarget.p1.y + b2 * animTarget.p2.y + b3 * animTarget.p3.y;
+
+    view.s = s;
+    view.x = cx - (vw / s) / 2;
+    view.y = cy - (vh / s) / 2;
+    if (!infinityMode) clamp();
+    redraw();
+
+    if (t < 1) {
+      requestAnimationFrame(stepAnimation);
+    } else {
+      isRapidMoving = false;
+      const cb = animCallback;
+      animTarget = null;
+      animCallback = null;
+      clamp();
+      redraw();
+      pumpWorkers(sessionToken);
+      if (cb) cb();
+    }
+  }
+
+  function angleDiff(a, b) {
+    const twoPi = Math.PI * 2;
+    let d = posMod(a - b, twoPi);
+    if (d > Math.PI) d = twoPi - d;
+    return d;
+  }
+
+  function pickFreshDirection() {
+    for (let attempt = 0; attempt < 40; attempt++) {
+      const cand = trueRandom() * Math.PI * 2;
+      let ok = true;
+      for (let k = 0; k < recentAngles.length; k++) {
+        const prev = recentAngles[k];
+        if (angleDiff(cand, prev) < 1.05 || angleDiff(cand, prev + Math.PI) < 0.55) {
+          ok = false;
+          break;
+        }
+      }
+      if (ok) {
+        driftAngle = cand;
+        recentAngles.push(cand);
+        if (recentAngles.length > 3) recentAngles.shift();
+        driftDirX = Math.cos(cand);
+        driftDirY = Math.sin(cand);
+        return;
+      }
+    }
+    driftAngle = posMod(driftAngle + 1.85, Math.PI * 2);
+    driftDirX = Math.cos(driftAngle);
+    driftDirY = Math.sin(driftAngle);
+  }
+
+  function getTargetLogoFrame(idx) {
+    const { maxZoom } = getZoomBounds();
+    const photoFitZoom = Math.min(vw, vh) * 0.30 / Math.max(W[idx], H[idx]);
+    const targetS = Math.max(getZoomAtRatio(CONFIG.INITIAL_ZOOM_RATIO), Math.min(maxZoom * 0.72, photoFitZoom));
+
+    let targetCx = X[idx] + W[idx] / 2;
+    let targetCy = Y[idx] + H[idx] / 2;
+
+    if (infinityMode) {
+      const curCx = view.x + (vw / view.s) / 2;
+      const curCy = view.y + (vh / view.s) / 2;
+      targetCx += Math.round((curCx - targetCx) / pitchW) * pitchW;
+      targetCy += Math.round((curCy - targetCy) / pitchH) * pitchH;
+    }
+    return { targetCx, targetCy, targetS };
+  }
+
+  /* ===== Infinity Auto-Tour Cycle ===== */
+  function startInfinityCountdown() {
+    if (!N || infPhase !== "idle" || stdPhase !== "idle") return;
+    infPhase = "countdown";
+    countdownEndTime = performance.now() + 3000;
+    lastCountdownNum = 3;
+    driftTimerNum.textContent = "3";
+    driftTimer.classList.add("show");
+    autoLabel.textContent = "Pause Tour";
+    updateIdleNote();
+
+    const zoom50 = getZoomAtRatio(CONFIG.INF_CRUISE_RATIO);
+    if (view.s < zoom50 * 0.80 || view.s > zoom50 * 1.25) {
+      const curCx = view.x + (vw / view.s) / 2;
+      const curCy = view.y + (vh / view.s) / 2;
+      flyToCenter(curCx, curCy, zoom50, false, 2300);
+    }
+  }
+
+  function beginInfinityCruise() {
+    if (!infinityMode || !N) return;
+    pickFreshDirection();
+    infPhase = "cruising";
+    driftStartTime = performance.now();
+    driftLastTime = driftStartTime;
+    driftWorkerTimer = driftStartTime;
+    infLiftStartZoom = view.s;
+    autoLabel.textContent = "Pause Tour";
+    updateIdleNote();
+    requestAnimationFrame(stepInfinityCruise);
+  }
+
+  function stepInfinityCruise(now) {
+    if (infPhase !== "cruising" || !infinityMode || !N) {
+      isRapidMoving = false;
+      return;
+    }
+    isRapidMoving = true;
+    const dt = Math.min(0.1, (now - driftLastTime) / 1000);
+    driftLastTime = now;
+
+    const elapsedSec = (now - driftStartTime) / 1000;
+
+    const zoom50 = getZoomAtRatio(CONFIG.INF_CRUISE_RATIO);
+    if (elapsedSec < 1.2 && Math.abs(Math.log(infLiftStartZoom / zoom50)) > 0.05) {
+      const zt = Math.min(1, elapsedSec / 1.2);
+      const ze = 0.5 - 0.5 * Math.cos(Math.PI * zt);
+      const curCx = view.x + (vw / view.s) / 2;
+      const curCy = view.y + (vh / view.s) / 2;
+      const ns = Math.exp((1 - ze) * Math.log(infLiftStartZoom) + ze * Math.log(zoom50));
+      view.s = ns;
+      view.x = curCx - (vw / ns) / 2;
+      view.y = curCy - (vh / ns) / 2;
+    }
+
+    const u = Math.min(1, elapsedSec / CONFIG.INF_RAMP_SEC);
+    const speedFactor = 0.0001 + (2.0 - 0.0001) * Math.pow(u, 2.0);
+    const speedWorld = (CONFIG.INF_BASE_SPEED_PX * speedFactor) / view.s;
+
+    view.x += driftDirX * speedWorld * dt;
+    view.y += driftDirY * speedWorld * dt;
+    clamp();
+    redraw();
+
+    if (now - driftWorkerTimer > 800) {
+      driftWorkerTimer = now;
+      pumpWorkers(sessionToken);
+    }
+
+    if (elapsedSec >= CONFIG.INF_CRUISE_MAX_SEC) {
+      isRapidMoving = false;
+      catchLogoInInfinity();
+      return;
+    }
+
+    requestAnimationFrame(stepInfinityCruise);
+  }
+
+  function catchLogoInInfinity() {
+    if (!infinityMode || !N) return;
+    infPhase = "catching";
+
+    const curCx = view.x + (vw / view.s) / 2;
+    const curCy = view.y + (vh / view.s) / 2;
+    const aheadX = posMod(curCx + driftDirX * 650, pitchW);
+    const aheadY = posMod(curCy + driftDirY * 650, pitchH);
+
+    let chosen = -1;
+    const row = lastRowLE(Math.max(CONFIG.SAFE_MARGIN_PX, Math.min(worldH - CONFIG.SAFE_MARGIN_PX, aheadY)));
+    let bestDist = Infinity;
+    for (let i = rowS[row]; i < rowS[row + 1]; i++) {
+      if (recentSet.has(i) || !isSafe256Zone(i)) continue;
+      const lx = X[i] + W[i] / 2, ly = Y[i] + H[i] / 2;
+      const d = Math.hypot(lx - aheadX, ly - aheadY);
+      if (d < bestDist) {
+        bestDist = d;
+        chosen = i;
+      }
+    }
+    if (chosen < 0) chosen = pickRandomLogo(CONFIG.SAFE_MARGIN_PX);
+    else recordPicked(chosen);
+
+    const { targetCx, targetCy, targetS } = getTargetLogoFrame(chosen);
+
+    const flightMs = flyToCenter(targetCx, targetCy, targetS, false, 1150, () => {
+      if (infPhase !== "catching" || !infinityMode) return;
+      infPhase = "paused";
+      infPauseEndTime = performance.now() + CONFIG.INF_LOGO_PAUSE_MS;
+    });
+
+    highlight = {
+      idx: chosen,
+      startTime: performance.now() + flightMs * 0.72,
+      duration: 2100,
+      theme: "red"
+    };
+    redraw();
+  }
+
+  /* ===== Standard Mode Showcase ===== */
+  function startStandardShowcase() {
+    if (infinityMode || !N || stdPhase !== "idle" || infPhase !== "idle") return;
+    stdPhase = "zoom_out";
+    autoLabel.textContent = "Pause Showcase";
+    updateIdleNote();
+
+    const { baseMin } = getZoomBounds();
+    const dur = flyToCenter(worldW / 2, worldH / 2, baseMin, false, 650, () => {
+      if (stdPhase !== "zoom_out" || infinityMode) return;
+      stdPhaseEndTime = performance.now() + CONFIG.STD_ZOOMOUT_HOLD_MS;
+    });
+    if (dur === 0) stdPhaseEndTime = performance.now() + CONFIG.STD_ZOOMOUT_HOLD_MS;
+  }
+
+  function launchShowcaseLogo() {
+    if (infinityMode || !N || stdPhase === "idle") return;
+    stdPhase = "fly_in";
+
+    const idx = pickRandomLogo(Math.max(CONFIG.SAFE_MARGIN_PX, Math.min(worldW, worldH) * 0.20));
+    const { targetCx, targetCy, targetS } = getTargetLogoFrame(idx);
+
+    const flightMs = flyToCenter(targetCx, targetCy, targetS, true, null, () => {
+      if (stdPhase !== "fly_in" || infinityMode) return;
+      stdPhase = "hold_logo";
+      stdPhaseEndTime = performance.now() + CONFIG.STD_LOGO_HOLD_MS;
+
+      clearShowcaseTimers();
+      stdEncoreTimer = setTimeout(() => {
+        if (stdPhase === "hold_logo" && !infinityMode) {
+          highlight = {
+            idx,
+            startTime: performance.now(),
+            duration: 1650,
+            theme: "gold"
+          };
+          redraw();
+        }
+      }, 4800);
+    });
+
+    highlight = {
+      idx,
+      startTime: performance.now() + flightMs * 0.74,
+      duration: 1650,
+      theme: "gold"
+    };
+    redraw();
+  }
+
+  /* ===== Unified Supervisor Loop ===== */
+  setInterval(() => {
+    if (!N || !picker.classList.contains("hidden")) return;
+    const now = performance.now();
+
+    if (infinityMode) {
+      if (infPhase === "countdown") {
+        const remMs = countdownEndTime - now;
+        if (remMs <= 0) {
+          hideCountdown();
+          animTarget = null;
+          animCallback = null;
+          beginInfinityCruise();
+        } else {
+          const sec = Math.ceil(remMs / 1000);
+          if (sec !== lastCountdownNum) {
+            lastCountdownNum = sec;
+            driftTimerNum.textContent = String(sec);
+          }
+        }
+        return;
+      }
+
+      if (infPhase === "paused") {
+        if (now >= infPauseEndTime) {
+          beginInfinityCruise();
+        }
+        return;
+      }
+
+      if (autoScrollEnabled && infPhase === "idle" && !animTarget && !inertia.active && ptr.size === 0) {
+        if (now - lastInteraction >= CONFIG.INF_IDLE_MS - 3000) {
+          startInfinityCountdown();
+        }
+      }
+      return;
+    }
+
+    if (stdPhase === "zoom_out" && !animTarget) {
+      if (now >= stdPhaseEndTime) {
+        launchShowcaseLogo();
+      }
+      return;
+    }
+
+    if (stdPhase === "hold_logo") {
+      if (now >= stdPhaseEndTime) {
+        stdPhase = "idle";
+        startStandardShowcase();
+      }
+      return;
+    }
+
+    if (autoScrollEnabled && stdPhase === "idle" && !animTarget && !inertia.active && ptr.size === 0) {
+      if (now - lastInteraction >= CONFIG.STD_IDLE_MS) {
+        startStandardShowcase();
+      }
+    }
+  }, 150);
+
+  /* ===== Nav Menu & Action Buttons ===== */
+  function toggleMenu(force) {
+    const open = typeof force === "boolean" ? force : !navDrawer.classList.contains("open");
+    navDrawer.classList.toggle("open", open);
+    menuBtn.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+  }
+
+  menuBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    markInteraction();
+    toggleMenu();
+  });
+
+  randomBtn.addEventListener("click", () => {
+    markInteraction();
+    inertia.active = false;
+    if (!N) return;
+
+    const minJumpDist = Math.max(CONFIG.SAFE_MARGIN_PX, Math.min(worldW, worldH) * 0.22);
+    const idx = pickRandomLogo(minJumpDist);
+    const { targetCx, targetCy, targetS } = getTargetLogoFrame(idx);
+
+    const flightMs = flyToCenter(targetCx, targetCy, targetS, true);
+    highlight = {
+      idx,
+      startTime: performance.now() + flightMs * 0.74,
+      duration: 1500,
+      theme: "gold"
+    };
+    redraw();
+  });
+
+  infinityBtn.addEventListener("click", () => {
+    markInteraction();
+    infinityMode = !infinityMode;
+    infinityBtn.classList.toggle("active", infinityMode);
+    infinityTag.textContent = infinityMode ? "ON" : "OFF";
+    autoLabel.textContent = infinityMode ? "Auto Tour (∞)" : "Auto Showcase";
+    if (!infinityMode) {
+      view.x = posMod(view.x, pitchW);
+      view.y = posMod(view.y, pitchH);
+      clamp();
+    }
+    updateStatus();
+    updateIdleNote();
+    redraw();
+    pumpWorkers(sessionToken);
+  });
+
+  autoScrollToggleBtn.addEventListener("click", () => {
+    autoScrollEnabled = !autoScrollEnabled;
+    updateAutoScrollUI();
+    markInteraction();
+  });
+
+  fullViewBtn.addEventListener("click", () => {
+    markInteraction();
+    inertia.active = false;
+    if (!N) return;
+    const { baseMin } = getZoomBounds();
+    flyToCenter(worldW / 2, worldH / 2, baseMin, false, 600);
+    toggleMenu(false);
+  });
+
+  autoBtn.addEventListener("click", () => {
+    if (infPhase !== "idle" || stdPhase !== "idle") {
+      markInteraction();
+    } else {
+      inertia.active = false;
+      toggleMenu(false);
+      if (infinityMode) startInfinityCountdown();
+      else startStandardShowcase();
+    }
+  });
+
+  changeSourceBtn.addEventListener("click", () => {
+    markInteraction();
+    inertia.active = false;
+    toggleMenu(false);
+    picker.classList.remove("hidden");
+  });
+
+  /* ===== Enhanced Native-Feel Touch, Inertial Momentum & Pinch-Zoom ===== */
+  const ptr = new Map();
+  let pinchDist = 0, pinchMidX = 0, pinchMidY = 0;
+  let trail = [];
+  let lastTap = { x: 0, y: 0, t: 0 };
+  let moveWorkerThrottle = 0;
+
+  const inertia = {
+    active: false,
+    vx: 0,
+    vy: 0,
+    lastTime: 0
+  };
+
+  function startInertia(vx, vy) {
+    const maxSpeed = 2800;
+    const mag = Math.hypot(vx, vy);
+    if (mag > maxSpeed) {
+      vx = (vx / mag) * maxSpeed;
+      vy = (vy / mag) * maxSpeed;
+    }
+    inertia.active = true;
+    inertia.vx = vx;
+    inertia.vy = vy;
+    inertia.lastTime = performance.now();
+    isRapidMoving = true;
+    requestAnimationFrame(stepInertia);
+  }
+
+  function stepInertia(now) {
+    if (!inertia.active || ptr.size > 0 || animTarget) {
+      inertia.active = false;
+      isRapidMoving = false;
+      redraw();
+      return;
+    }
+
+    const dt = Math.min(0.05, (now - inertia.lastTime) / 1000);
+    inertia.lastTime = now;
+
+    if (dt > 0) {
+      const prevX = view.x, prevY = view.y;
+      view.x -= (inertia.vx * dt) / view.s;
+      view.y -= (inertia.vy * dt) / view.s;
+      clamp();
+
+      if (!infinityMode) {
+        if (Math.abs(view.x - prevX) < 0.001) inertia.vx = 0;
+        if (Math.abs(view.y - prevY) < 0.001) inertia.vy = 0;
+      }
+
+      const decay = Math.exp(-dt * 4.8);
+      inertia.vx *= decay;
+      inertia.vy *= decay;
+      redraw();
+
+      if (now - moveWorkerThrottle > 280) {
+        moveWorkerThrottle = now;
+        pumpWorkers(sessionToken);
+      }
+    }
+
+    if (Math.hypot(inertia.vx, inertia.vy) < 18) {
+      inertia.active = false;
+      isRapidMoving = false;
+      pumpWorkers(sessionToken);
+      redraw();
+      return;
+    }
+
+    requestAnimationFrame(stepInertia);
+  }
+
+  function zoomAt(mx, my, ns) {
+    if (!N) return;
+    animTarget = null;
+    animCallback = null;
+    const { minZoom, maxZoom } = getZoomBounds();
+    ns = Math.min(maxZoom, Math.max(minZoom, ns));
+    const wx = view.x + mx / view.s;
+    const wy = view.y + my / view.s;
+    view.s = ns;
+    view.x = wx - mx / ns;
+    view.y = wy - my / ns;
+    clamp();
+    redraw();
+  }
+
+  function handleDoubleTapOrClick(sx, sy) {
+    if (!N) return;
+    const { baseMin } = getZoomBounds();
+    const wx = view.x + sx / view.s;
+    const wy = view.y + sy / view.s;
+    if (view.s <= baseMin * 1.55) {
+      flyToCenter(wx, wy, getZoomAtRatio(CONFIG.INITIAL_ZOOM_RATIO), false, 420);
+    } else {
+      flyToCenter(worldW / 2, worldH / 2, baseMin, false, 480);
+    }
+  }
+
+  cv.addEventListener("pointerdown", e => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    markInteraction();
+    inertia.active = false;
+    animTarget = null;
+    animCallback = null;
+    toggleMenu(false);
+
+    try { cv.setPointerCapture(e.pointerId); } catch {}
+    const now = performance.now();
+    ptr.set(e.pointerId, {
+      x: e.clientX,
+      y: e.clientY,
+      downX: e.clientX,
+      downY: e.clientY,
+      downTime: now
+    });
+    cv.classList.add("drag");
+
+    if (ptr.size === 1) {
+      trail = [{ x: e.clientX, y: e.clientY, t: now }];
+      pinchDist = 0;
+    } else if (ptr.size === 2) {
+      trail = [];
+      const [a, b] = [...ptr.values()];
+      pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+      pinchMidX = (a.x + b.x) / 2;
+      pinchMidY = (a.y + b.y) / 2;
+    }
+  });
+
+  cv.addEventListener("pointermove", e => {
+    const p = ptr.get(e.pointerId);
+    if (!p) return;
+
+    const now = performance.now();
+    const prevX = p.x, prevY = p.y;
+    p.x = e.clientX;
+    p.y = e.clientY;
+
+    markInteraction();
+    isRapidMoving = true;
+
+    if (ptr.size === 2) {
+      const [a, b] = [...ptr.values()];
+      const dist = Math.hypot(a.x - b.x, a.y - b.y);
+      const midX = (a.x + b.x) / 2;
+      const midY = (a.y + b.y) / 2;
+
+      if (pinchDist > 8 && dist > 8) {
+        const wx = view.x + pinchMidX / view.s;
+        const wy = view.y + pinchMidY / view.s;
+        const { minZoom, maxZoom } = getZoomBounds();
+        const ns = Math.max(minZoom, Math.min(maxZoom, view.s * (dist / pinchDist)));
+        view.s = ns;
+        view.x = wx - midX / ns;
+        view.y = wy - midY / ns;
+        clamp();
+        redraw();
+      }
+      pinchDist = dist;
+      pinchMidX = midX;
+      pinchMidY = midY;
+    } else if (ptr.size === 1) {
+      const dx = p.x - prevX;
+      const dy = p.y - prevY;
+      view.x -= dx / view.s;
+      view.y -= dy / view.s;
+      clamp();
+      redraw();
+
+      trail.push({ x: p.x, y: p.y, t: now });
+      while (trail.length > 2 && now - trail[0].t > 100) {
+        trail.shift();
+      }
+    }
+  });
+
+  function onPointerEnd(e) {
+    const p = ptr.get(e.pointerId);
+    if (!p) return;
+    ptr.delete(e.pointerId);
+
+    const now = performance.now();
+
+    if (ptr.size === 1) {
+      const rem = [...ptr.values()][0];
+      pinchDist = 0;
+      trail = [{ x: rem.x, y: rem.y, t: now }];
+      return;
+    }
+
+    if (ptr.size === 0) {
+      cv.classList.remove("drag");
+      pinchDist = 0;
+      isRapidMoving = false;
+
+      if (e.type === "pointerup") {
+        const travel = Math.hypot(e.clientX - p.downX, e.clientY - p.downY);
+        const heldMs = now - p.downTime;
+
+        if (travel < 12 && heldMs < 280) {
+          if (now - lastTap.t < 320 && Math.hypot(e.clientX - lastTap.x, e.clientY - lastTap.y) < 46) {
+            lastTap.t = 0;
+            handleDoubleTapOrClick(e.clientX, e.clientY);
+          } else {
+            lastTap = { x: e.clientX, y: e.clientY, t: now };
+          }
+        } else if (trail.length >= 2) {
+          const newest = trail[trail.length - 1];
+          const oldest = trail[0];
+          const dt = newest.t - oldest.t;
+          if (now - newest.t < 65 && dt > 10) {
+            const vx = ((newest.x - oldest.x) / dt) * 1000;
+            const vy = ((newest.y - oldest.y) / dt) * 1000;
+            if (Math.hypot(vx, vy) > 130) {
+              startInertia(vx, vy);
+            }
+          }
+        }
+      }
+
+      trail = [];
+      redraw();
+      pumpWorkers(sessionToken);
+    }
+  }
+
+  cv.addEventListener("pointerup", onPointerEnd);
+  cv.addEventListener("pointercancel", onPointerEnd);
+  cv.addEventListener("lostpointercapture", onPointerEnd);
+
+  let wheelEndTimer = 0;
+  cv.addEventListener("wheel", e => {
+    e.preventDefault();
+    markInteraction();
+    inertia.active = false;
+    isRapidMoving = true;
+    zoomAt(e.clientX, e.clientY, view.s * Math.exp(-e.deltaY * 0.0016));
+    clearTimeout(wheelEndTimer);
+    wheelEndTimer = setTimeout(() => {
+      isRapidMoving = false;
+      redraw();
+      pumpWorkers(sessionToken);
+    }, 140);
+  }, { passive: false });
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    vw = innerWidth;
+    vh = innerHeight;
+    cv.width = vw * dpr;
+    cv.height = vh * dpr;
+    if (N) clamp();
+    redraw();
+  }
+  addEventListener("resize", resize);
+
+  /* ===== Unified Loader (HTTP Folder / Local Folder / ZIP) ===== */
+  function resetEngineState() {
+    workersActive = 0;
+    animTarget = null;
+    animCallback = null;
+    inertia.active = false;
+    infPhase = "idle";
+    stdPhase = "idle";
+    hideCountdown();
+    clearShowcaseTimers();
+    highlight = null;
+  }
+
+  async function finalizeLaunch(token) {
+    buildInstantLayout();
+    await initPersistence(token);
+    if (token !== sessionToken) return;
+
+    picker.classList.add("hidden");
+
+    const startZoom = getZoomAtRatio(CONFIG.INITIAL_ZOOM_RATIO);
+    const viewW = vw / startZoom;
+    const viewH = vh / startZoom;
+    view.s = startZoom;
+    view.x = trueRandom() * Math.max(0, worldW - viewW);
+    view.y = trueRandom() * Math.max(0, worldH - viewH);
+    clamp();
+    resize();
+
+    lastInteraction = performance.now();
+    updateAutoScrollUI();
+    updateIdleNote();
+    pumpWorkers(token);
+  }
+
+  async function loadLocalFolder(fileList) {
+    const token = ++sessionToken;
+    resetEngineState();
+
+    const imgs = [];
+    for (let k = 0; k < fileList.length; k++) {
+      const f = fileList[k];
+      if (!f.name || f.name.startsWith(".") || !EXT.test(f.name)) continue;
+      imgs.push(f);
+    }
+
+    if (!imgs.length) {
+      st.textContent = "No images found";
+      pickTitle.textContent = "No Images Found in Folder";
+      pickDesc.textContent = "Please choose a folder containing PNG, JPG, WebP, or SVG images.";
+      picker.classList.remove("hidden");
+      return;
+    }
+
+    imgs.sort((a, b) => a.name.localeCompare(b.name));
+    sourceMode = "folder_local";
+    localFiles = imgs;
+    N = imgs.length;
+    sourceId = `dir:${N}:${imgs[0].name}:${imgs[N - 1].name}`;
+
+    st.textContent = "Opening folder…";
+    await finalizeLaunch(token);
+  }
+
+  async function loadHttpFolder(baseUrl, names) {
+    const token = ++sessionToken;
+    resetEngineState();
+
+    sourceMode = "folder_http";
+    folderBaseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
+    folderNames = names;
+    N = names.length;
+    sourceId = `httpdir:${folderBaseUrl}:${N}:${names[0]}:${names[N - 1]}`;
+
+    await finalizeLaunch(token);
+  }
+
+  async function loadZipArchive(src) {
+    const token = ++sessionToken;
+    try {
+      resetEngineState();
+      sourceMode = "zip";
+      zipSource = src;
+      sourceId = src.id;
+
+      st.textContent = "Reading index…";
+      pickTitle.textContent = "Opening Archive…";
+      pickDesc.textContent = "Just a moment.";
+
+      await readZipIndex(src);
+      if (token !== sessionToken) return;
+
+      await finalizeLaunch(token);
+    } catch (err) {
+      st.textContent = err.message || "Failed to load archive";
+      pickTitle.textContent = "Load Image Folder";
+      pickDesc.textContent = err.message || "Please choose a folder or .zip file.";
+      picker.classList.remove("hidden");
+    }
+  }
+
+  folderInput.addEventListener("change", e => {
+    if (e.target.files && e.target.files.length) {
+      loadLocalFolder(e.target.files);
+    }
+  });
+
+  zipInput.addEventListener("change", e => {
+    const f = e.target.files[0];
+    if (f) loadZipArchive(createFileSource(f));
+  });
+
+  dropCard.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropCard.style.borderColor = "var(--accent)";
+  });
+  dropCard.addEventListener("dragleave", () => {
+    dropCard.style.borderColor = "var(--line)";
+  });
+  dropCard.addEventListener("drop", e => {
+    e.preventDefault();
+    dropCard.style.borderColor = "var(--line)";
+    const files = e.dataTransfer.files;
+    if (files.length === 1 && files[0].name.toLowerCase().endsWith(".zip")) {
+      loadZipArchive(createFileSource(files[0]));
+    } else if (files.length > 0) {
+      loadLocalFolder(files);
+    }
+  });
+
+  updateAutoScrollUI();
+  updateIdleNote();
+
+  /* ===== Auto-Boot: Manifest JSON -> Folder Listing -> ZIP -> Picker ===== */
+  (async () => {
+    resize();
+
+    if (location.protocol === "http:" || location.protocol === "https:") {
+      st.textContent = "Finding folder…";
+
+      // 1. Check JSON manifests (if generated by make_list.py)
+      for (const mUrl of CONFIG.AUTO_MANIFESTS) {
+        try {
+          const list = await tryFetchManifest(mUrl);
+          // Match folder name (e.g. images.json -> images/)
+          const folderGuess = mUrl.replace(".json", "/");
+          await loadHttpFolder(folderGuess, list);
+          return;
+        } catch {}
+      }
+
+      // 2. Auto-read server directory listing (images/, logos/, 20k/)
+      for (const folderUrl of CONFIG.AUTO_FOLDERS) {
+        try {
+          const { base, files } = await tryFetchDirectoryListing(folderUrl);
+          await loadHttpFolder(base, files);
+          return;
+        } catch {}
+      }
+
+      // 3. Fallback to 20k.zip if present
+      try {
+        const src = await createHttpZipSource(CONFIG.AUTO_ZIP_URL);
+        await loadZipArchive(src);
+        return;
+      } catch {}
+    }
+
+    st.textContent = "Select folder";
+    picker.classList.remove("hidden");
+  })();
+})();
+</script>
+</body>
+</html>
