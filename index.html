@@ -43,7 +43,6 @@
     cursor: grabbing;
   }
 
-  /* Compact Bottom-Left Header Bar */
   .bar {
     position: fixed;
     left: max(12px, env(safe-area-inset-left));
@@ -76,9 +75,7 @@
     padding: 0;
     transition: background 0.15s;
   }
-  .menu-btn:hover {
-    background: rgba(180, 138, 44, 0.22);
-  }
+  .menu-btn:hover { background: rgba(180, 138, 44, 0.22); }
   .menu-btn span {
     display: block;
     width: 12px;
@@ -87,29 +84,12 @@
     border-radius: 2px;
     transition: transform 0.22s ease, opacity 0.18s ease;
   }
-  .menu-btn.open span:nth-child(1) {
-    transform: translateY(4.6px) rotate(45deg);
-  }
-  .menu-btn.open span:nth-child(2) {
-    opacity: 0;
-  }
-  .menu-btn.open span:nth-child(3) {
-    transform: translateY(-4.6px) rotate(-45deg);
-  }
-  .bar b {
-    font-size: 12.5px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
-  }
-  #status {
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    font-size: 11.5px;
-    white-space: nowrap;
-  }
+  .menu-btn.open span:nth-child(1) { transform: translateY(4.6px) rotate(45deg); }
+  .menu-btn.open span:nth-child(2) { opacity: 0; }
+  .menu-btn.open span:nth-child(3) { transform: translateY(-4.6px) rotate(-45deg); }
+  .bar b { font-size: 12.5px; font-weight: 600; letter-spacing: 0.01em; white-space: nowrap; }
+  #status { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 11.5px; white-space: nowrap; }
 
-  /* Compact Bottom-Left Upward Slide-Out Nav Menu */
   .nav-drawer {
     position: fixed;
     left: max(12px, env(safe-area-inset-left));
@@ -132,11 +112,7 @@
     pointer-events: none;
     transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
   }
-  .nav-drawer.open {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-    pointer-events: auto;
-  }
+  .nav-drawer.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: auto; }
   .nav-item {
     width: 100%;
     border: 1px solid transparent;
@@ -154,22 +130,10 @@
     text-align: left;
     transition: background 0.15s, border-color 0.15s, transform 0.1s;
   }
-  .nav-item:hover {
-    background: var(--bg);
-    border-color: var(--line);
-  }
-  .nav-item:active {
-    transform: scale(0.98);
-  }
-  .nav-item.primary {
-    background: var(--accent);
-    color: #FFFFFF;
-    font-weight: 600;
-  }
-  .nav-item.primary:hover {
-    background: #9E7722;
-    border-color: transparent;
-  }
+  .nav-item:hover { background: var(--bg); border-color: var(--line); }
+  .nav-item:active { transform: scale(0.98); }
+  .nav-item.primary { background: var(--accent); color: #FFFFFF; font-weight: 600; }
+  .nav-item.primary:hover { background: #9E7722; border-color: transparent; }
   .nav-item.active {
     background: rgba(180, 138, 44, 0.15);
     border-color: rgba(180, 138, 44, 0.45);
@@ -181,11 +145,7 @@
     border-color: rgba(180, 40, 52, 0.22);
     color: #8D2630;
   }
-  .nav-item svg {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-  }
+  .nav-item svg { width: 14px; height: 14px; flex-shrink: 0; }
   .pill-tag {
     margin-left: auto;
     font-size: 10px;
@@ -195,27 +155,11 @@
     background: rgba(94, 84, 52, 0.1);
     color: var(--ink);
   }
-  .nav-item.active .pill-tag {
-    background: var(--accent);
-    color: #FFFFFF;
-  }
-  .nav-item.off-state .pill-tag {
-    background: #B42834;
-    color: #FFFFFF;
-  }
-  .nav-divider {
-    height: 1px;
-    background: var(--line);
-    margin: 1px 4px;
-  }
-  .nav-note {
-    font-size: 10.5px;
-    color: var(--muted);
-    padding: 1px 8px 2px;
-    font-variant-numeric: tabular-nums;
-  }
+  .nav-item.active .pill-tag { background: var(--accent); color: #FFFFFF; }
+  .nav-item.off-state .pill-tag { background: #B42834; color: #FFFFFF; }
+  .nav-divider { height: 1px; background: var(--line); margin: 1px 4px; }
+  .nav-note { font-size: 10.5px; color: var(--muted); padding: 1px 8px 2px; font-variant-numeric: tabular-nums; }
 
-  /* Small Reddish 3, 2, 1 Countdown Badge */
   #driftTimer {
     position: fixed;
     top: max(12px, env(safe-area-inset-top));
@@ -240,10 +184,7 @@
     transform: scale(0.84);
     transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  #driftTimer.show {
-    opacity: 1;
-    transform: scale(1);
-  }
+  #driftTimer.show { opacity: 1; transform: scale(1); }
   #driftTimer .dot {
     width: 6px;
     height: 6px;
@@ -256,74 +197,36 @@
     50% { transform: scale(1.25); opacity: 1; }
   }
 
-  /* Folder / ZIP Picker Overlay */
-  #picker {
+  #notice {
     position: fixed;
     inset: 0;
-    background: var(--bg);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    z-index: 50;
+    padding: 24px;
+    background: var(--bg);
+    z-index: 40;
   }
-  #picker.hidden {
-    display: none;
-  }
-  .picker-card {
-    max-width: 420px;
-    width: 100%;
+  #notice.show { display: flex; }
+  .notice-box {
+    max-width: 440px;
     background: var(--tile);
     border: 1px solid var(--line);
-    border-radius: 20px;
-    padding: 28px 24px;
-    text-align: center;
-    box-shadow: 0 12px 32px rgba(94, 84, 52, 0.09);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(94, 84, 52, 0.09);
   }
-  .picker-card h2 {
-    margin: 0 0 8px;
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--ink);
-  }
-  .picker-card p {
-    margin: 0 0 20px;
-    font-size: 12.5px;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-  .picker-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .pick-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 11px 16px;
-    border-radius: 12px;
-    font: inherit;
-    font-size: 13.5px;
-    font-weight: 600;
-    cursor: pointer;
-    border: 1px solid var(--line);
+  .notice-box h3 { margin: 0 0 8px; font-size: 16px; }
+  .notice-box p { margin: 0 0 12px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .notice-box code {
+    display: block;
     background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
     color: var(--ink);
-    transition: transform 0.1s, background 0.15s;
-  }
-  .pick-btn.main {
-    background: var(--accent);
-    border-color: transparent;
-    color: #FFFFFF;
-  }
-  .pick-btn:active {
-    transform: scale(0.98);
-  }
-  #folderInput, #zipInput {
-    display: none;
   }
 </style>
 </head>
@@ -341,7 +244,7 @@
     <span></span><span></span><span></span>
   </button>
   <b>Logo Wall</b>
-  <span id="status">Initializing…</span>
+  <span id="status">Loading…</span>
 </div>
 
 <nav class="nav-drawer" id="navDrawer" aria-label="Wall Navigation">
@@ -388,27 +291,14 @@
   </button>
 
   <div class="nav-divider"></div>
-
-  <button class="nav-item" id="changeSourceBtn" type="button">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
-    </svg>
-    <span>Open Folder / .zip</span>
-  </button>
-
   <div class="nav-note" id="idleNote">Auto scroll is OFF (Manual mode)</div>
 </nav>
 
-<div id="picker" class="hidden">
-  <div class="picker-card" id="dropCard">
-    <h2 id="pickTitle">Load Image Folder</h2>
-    <p id="pickDesc">Select your unzipped folder once — all images load automatically without adding links.</p>
-    <div class="picker-actions">
-      <label class="pick-btn main" for="folderInput">Select Image Folder</label>
-      <label class="pick-btn" for="zipInput">Or Select .zip Archive</label>
-    </div>
-    <input type="file" id="folderInput" webkitdirectory directory multiple>
-    <input type="file" id="zipInput" accept=".zip,application/zip">
+<div id="notice">
+  <div class="notice-box">
+    <h3>20k.txt পাওয়া যায়নি</h3>
+    <p>Netlify-তে পাবলিক ফোল্ডার লিস্টিং বন্ধ থাকে। একবার আপনার ফোল্ডারে নিচের কমান্ড চালিয়ে <b>20k.txt</b> তৈরি করে আপডেট করুন:</p>
+    <code>ls -1 20k/zipper &gt; 20k.txt</code>
   </div>
 </div>
 
@@ -416,10 +306,10 @@
 (() => {
   /* ===== Configuration ===== */
   const CONFIG = {
-    // Auto-checked folders on http/https server (place your unzipped images in any of these!)
-    AUTO_FOLDERS: ["images/", "logos/", "20k/"],
-    AUTO_MANIFESTS: ["images.json", "logos.json"],
-    AUTO_ZIP_URL: "/20k.zip",
+    FOLDER_BASE: "20k/zipper/",
+    TXT_CANDIDATES: ["20k.txt", "20k/20k.txt", "20k/zipper/list.txt"],
+    JSON_CANDIDATES: ["20k.json", "20k/20k.json"],
+    DIR_CANDIDATES: ["20k/zipper/", "20k/"],
 
     GAP: 2,
     BASE_ROW_MIN: 90,
@@ -440,10 +330,8 @@
 
     TILE_SIZE: 768,
     OVERVIEW_MAX: 2560,
-    WORKER_CONCURRENCY: 4,
-    FOLDER_BATCH_SIZE: 20,
-    ZIP_RUN_BYTES: 2.5e6,
-    ZIP_RUN_MAX_ITEMS: 36,
+    WORKER_CONCURRENCY: 3,
+    FOLDER_BATCH_SIZE: 12,
     MAX_SECTOR_RAM: navigator.deviceMemory && navigator.deviceMemory <= 4 ? 70 : 180,
     MAX_HIRES_RAM: 90,
     HIRES_ZOOM_THRESHOLD: 1.35
@@ -451,24 +339,20 @@
 
   const $ = s => document.querySelector(s);
   const cv = $("#c"), ctx = cv.getContext("2d", { alpha: false });
-  const st = $("#status"), picker = $("#picker"), dropCard = $("#dropCard");
-  const folderInput = $("#folderInput"), zipInput = $("#zipInput");
-  const pickTitle = $("#pickTitle"), pickDesc = $("#pickDesc");
+  const st = $("#status"), notice = $("#notice");
   const menuBtn = $("#menuBtn"), navDrawer = $("#navDrawer");
   const randomBtn = $("#randomBtn"), infinityBtn = $("#infinityBtn"), infinityTag = $("#infinityTag");
   const autoScrollToggleBtn = $("#autoScrollToggleBtn"), autoScrollTag = $("#autoScrollTag");
   const fullViewBtn = $("#fullViewBtn"), autoBtn = $("#autoBtn"), autoLabel = $("#autoLabel");
-  const changeSourceBtn = $("#changeSourceBtn"), idleNote = $("#idleNote");
+  const idleNote = $("#idleNote");
   const driftTimer = $("#driftTimer"), driftTimerNum = $("#driftTimerNum");
 
   const EXT = /\.(png|jpe?g|gif|webp|avif|svg|bmp)$/i;
-  const MIME = {
-    png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg",
-    gif: "image/gif", webp: "image/webp", avif: "image/avif",
-    svg: "image/svg+xml", bmp: "image/bmp"
-  };
 
   let N = 0;
+  let folderNames = [];
+  let sourceId = "";
+
   let X, Y, W, H, rowY = [], rowS = [], worldW = 0, worldH = 0, pitchW = 0, pitchH = 0, minSide = 120;
   let dpr = 1, vw = 0, vh = 0;
   let view = { s: 1, x: 0, y: 0 };
@@ -477,17 +361,6 @@
   let infinityMode = false;
   let autoScrollEnabled = false;
   let highlight = null;
-
-  /* ===== Active Source State ("folder_http" | "folder_local" | "zip") ===== */
-  let sourceMode = "none";
-  let sourceId = "";
-  let folderBaseUrl = "";
-  let folderNames = [];
-  let localFiles = [];
-
-  // ZIP state
-  let zipSource = null;
-  let off, csz, meth, nlen, mime;
 
   function posMod(n, m) {
     return ((n % m) + m) % m;
@@ -522,173 +395,70 @@
   }
   const TARGET_15CM_PX = get15CmPx();
 
-  /* ===== Folder Discovery (HTML Directory Listing & JSON Manifest) ===== */
-  async function tryFetchManifest(manifestUrl) {
-    const res = await fetch(manifestUrl);
-    if (!res.ok) throw new Error("Not found");
-    const list = await res.json();
-    if (!Array.isArray(list) || list.length === 0) throw new Error("Empty");
-    const valid = list.filter(name => typeof name === "string" && EXT.test(name));
-    if (!valid.length) throw new Error("No images");
-    return valid;
-  }
-
-  async function tryFetchDirectoryListing(folderUrl) {
-    const base = folderUrl.endsWith("/") ? folderUrl : folderUrl + "/";
-    const res = await fetch(base);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const ct = (res.headers.get("content-type") || "").toLowerCase();
-    if (!ct.includes("text/html")) throw new Error("No directory index");
-
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    const anchors = doc.querySelectorAll("a[href]");
-    const files = [];
-    const seen = new Set();
-
-    for (let k = 0; k < anchors.length; k++) {
-      let href = anchors[k].getAttribute("href");
-      if (!href || href.startsWith("?") || href.startsWith("#") || href.startsWith("../") || href === "/") continue;
-      href = href.split("?")[0].split("#")[0];
-      if (href.endsWith("/")) continue;
-
-      let rawName = href.split("/").pop();
-      try { rawName = decodeURIComponent(rawName); } catch {}
-      if (!rawName || rawName.startsWith(".") || !EXT.test(rawName)) continue;
-
-      if (!seen.has(rawName)) {
-        seen.add(rawName);
-        files.push(rawName);
-      }
+  /* ===== Auto-Discover Files in 20k/zipper/ ===== */
+  async function loadFileList() {
+    for (const url of CONFIG.TXT_CANDIDATES) {
+      try {
+        const res = await fetch(url, { cache: "no-cache" });
+        if (!res.ok) continue;
+        const ct = (res.headers.get("content-type") || "").toLowerCase();
+        if (ct.includes("text/html")) continue;
+        const text = await res.text();
+        const list = text.split(/\r?\n/)
+          .map(s => s.trim())
+          .filter(s => s && !s.startsWith(".") && EXT.test(s));
+        if (list.length > 0) return list;
+      } catch {}
     }
 
-    if (!files.length) throw new Error("No images in directory");
-    return { base, files };
-  }
-
-  /* ===== ZIP Support (Kept as Fallback) ===== */
-  function createFileSource(file) {
-    return {
-      id: `file:${file.name}:${file.size}:${file.lastModified}`,
-      size: file.size,
-      read: (a, b) => file.slice(a, Math.min(b + 1, file.size)).arrayBuffer()
-    };
-  }
-
-  async function createHttpZipSource(url) {
-    const probe = await fetch(url, { headers: { Range: "bytes=0-0" } });
-    if (!probe.ok) throw new Error(`HTTP ${probe.status}`);
-
-    if (probe.status === 206) {
-      try { await probe.body?.cancel(); } catch {}
-      const cr = probe.headers.get("content-range") || "";
-      const m = /\/(\d+)$/.exec(cr);
-      const len = m ? Number(m[1]) : Number(probe.headers.get("content-length") || 0);
-      if (len > 0) {
-        return {
-          id: `url:${url}:${len}`,
-          size: len,
-          read: async (a, b) => {
-            const end = Math.min(b, len - 1);
-            const r = await fetch(url, { headers: { Range: `bytes=${a}-${end}` } });
-            if (r.status !== 206) throw new Error(`Range HTTP ${r.status}`);
-            return r.arrayBuffer();
-          }
-        };
-      }
-    }
-
-    const totalLen = Number(probe.headers.get("content-length") || 0);
-    if (probe.body && totalLen > 0) {
-      const reader = probe.body.getReader();
-      const chunks = [];
-      let received = 0;
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
-        received += value.byteLength;
-        st.textContent = `Loading… ${Math.min(100, Math.round((received / totalLen) * 100))}%`;
-      }
-      const blob = new Blob(chunks, { type: "application/zip" });
-      return createFileSource(new File([blob], url, { lastModified: 0 }));
-    }
-
-    const blob = await probe.blob();
-    return createFileSource(new File([blob], url, { lastModified: 0 }));
-  }
-
-  async function readZipIndex(src) {
-    const tailLen = Math.min(src.size, 70000);
-    const t = new DataView(await src.read(src.size - tailLen, src.size - 1));
-
-    let e = t.byteLength - 22;
-    while (e >= 0 && t.getUint32(e, true) !== 0x06054b50) e--;
-    if (e < 0) throw new Error("Invalid .zip archive");
-
-    let total = t.getUint16(e + 10, true);
-    let cdSize = t.getUint32(e + 12, true);
-    let cdOff = t.getUint32(e + 16, true);
-
-    if (e >= 20 && t.getUint32(e - 20, true) === 0x07064b50) {
-      const a = Number(t.getBigUint64(e - 12, true));
-      const z = new DataView(await src.read(a, a + 55));
-      total = Number(z.getBigUint64(32, true));
-      cdSize = Number(z.getBigUint64(40, true));
-      cdOff = Number(z.getBigUint64(48, true));
-    }
-
-    const buf = await src.read(cdOff, cdOff + cdSize - 1);
-    const d = new DataView(buf);
-    const dec = new TextDecoder();
-
-    const o = [], c = [], m = [], l = [], mt = [];
-    let p = 0;
-
-    for (let i = 0; i < total && p + 46 <= d.byteLength; i++) {
-      if (d.getUint32(p, true) !== 0x02014b50) break;
-      const me = d.getUint16(p + 10, true);
-      const us = d.getUint32(p + 24, true);
-      let cs = d.getUint32(p + 20, true);
-      let lo = d.getUint32(p + 42, true);
-      const n = d.getUint16(p + 28, true);
-      const ex = d.getUint16(p + 30, true);
-      const cm = d.getUint16(p + 32, true);
-
-      if (cs === 0xFFFFFFFF || lo === 0xFFFFFFFF || us === 0xFFFFFFFF) {
-        let q = p + 46 + n;
-        const end = q + ex;
-        while (q + 4 <= end) {
-          const id = d.getUint16(q, true);
-          const sz = d.getUint16(q + 2, true);
-          if (id === 1) {
-            let k = q + 4;
-            if (us === 0xFFFFFFFF) k += 8;
-            if (cs === 0xFFFFFFFF) { cs = Number(d.getBigUint64(k, true)); k += 8; }
-            if (lo === 0xFFFFFFFF) lo = Number(d.getBigUint64(k, true));
-          }
-          q += 4 + sz;
+    for (const url of CONFIG.JSON_CANDIDATES) {
+      try {
+        const res = await fetch(url, { cache: "no-cache" });
+        if (!res.ok) continue;
+        const arr = await res.json();
+        if (Array.isArray(arr)) {
+          const list = arr.filter(s => typeof s === "string" && !s.startsWith(".") && EXT.test(s));
+          if (list.length > 0) return list;
         }
-      }
-
-      const name = dec.decode(new Uint8Array(buf, p + 46, n));
-      const base = name.split("/").pop();
-      const mm = EXT.exec(base);
-
-      if (mm && !name.startsWith("__MACOSX") && !base.startsWith("._") && !name.endsWith("/")) {
-        o.push(lo); c.push(cs); m.push(me); l.push(n); mt.push(MIME[mm[1].toLowerCase()]);
-      }
-      p += 46 + n + ex + cm;
+      } catch {}
     }
 
-    if (!o.length) throw new Error("No supported images found in .zip");
+    for (const dirUrl of CONFIG.DIR_CANDIDATES) {
+      try {
+        const res = await fetch(dirUrl);
+        if (!res.ok) continue;
+        const ct = (res.headers.get("content-type") || "").toLowerCase();
+        if (!ct.includes("text/html")) continue;
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        const anchors = doc.querySelectorAll("a[href]");
+        const list = [];
+        const seen = new Set();
+        for (let k = 0; k < anchors.length; k++) {
+          let href = anchors[k].getAttribute("href");
+          if (!href || href.startsWith("?") || href.startsWith("#") || href.startsWith("../") || href === "/") continue;
+          href = href.split("?")[0].split("#")[0];
+          if (href.endsWith("/")) continue;
+          let name = href.split("/").pop();
+          try { name = decodeURIComponent(name); } catch {}
+          if (!name || name.startsWith(".") || !EXT.test(name)) continue;
+          if (!seen.has(name)) { seen.add(name); list.push(name); }
+        }
+        if (list.length > 0) {
+          CONFIG.FOLDER_BASE = dirUrl;
+          return list;
+        }
+      } catch {}
+    }
 
-    N = o.length;
-    off = Float64Array.from(o);
-    csz = Float64Array.from(c);
-    meth = Uint8Array.from(m);
-    nlen = Uint16Array.from(l);
-    mime = mt;
+    return null;
+  }
+
+  function resolveImageUrl(entry) {
+    let clean = entry.replace(/^\.?\//, "");
+    if (clean.startsWith("20k/")) return clean;
+    if (clean.startsWith("zipper/")) return "20k/" + clean;
+    return CONFIG.FOLDER_BASE + clean;
   }
 
   /* ===== IndexedDB Persistent Storage ===== */
@@ -696,7 +466,7 @@
   function getDB() {
     if (!dbPromise) {
       dbPromise = new Promise((res, rej) => {
-        const r = indexedDB.open("logowall_instant_v2", 1);
+        const r = indexedDB.open("logowall_20k_v3", 1);
         r.onupgradeneeded = () => {
           const db = r.result;
           if (!db.objectStoreNames.contains("tiles")) db.createObjectStore("tiles");
@@ -828,54 +598,23 @@
     pitchH = worldH + G;
   }
 
-  /* ===== Image Decoding (Folder HTTP / Folder Local / ZIP) ===== */
-  async function decodeBlobAsBitmap(blob, isSvg) {
-    if (isSvg) {
+  /* ===== Direct Image Loader ===== */
+  async function loadFolderImage(i) {
+    const fname = folderNames[i];
+    if (!fname) return null;
+    const rawPath = resolveImageUrl(fname);
+    const url = rawPath.split("/").map(encodeURIComponent).join("/");
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    if (fname.toLowerCase().endsWith(".svg")) {
       const img = new Image();
-      const url = URL.createObjectURL(blob);
-      img.src = url;
-      try { await img.decode(); } finally { URL.revokeObjectURL(url); }
+      const objUrl = URL.createObjectURL(blob);
+      img.src = objUrl;
+      try { await img.decode(); } finally { URL.revokeObjectURL(objUrl); }
       return img;
     }
     return createImageBitmap(blob);
-  }
-
-  async function loadSingleFolderImage(i) {
-    if (sourceMode === "folder_local") {
-      const f = localFiles[i];
-      if (!f) return null;
-      const isSvg = f.name.toLowerCase().endsWith(".svg");
-      return decodeBlobAsBitmap(f, isSvg);
-    }
-    if (sourceMode === "folder_http") {
-      const fname = folderNames[i];
-      if (!fname) return null;
-      const url = folderBaseUrl + fname.split("/").map(encodeURIComponent).join("/");
-      const res = await fetch(url);
-      if (!res.ok) return null;
-      const blob = await res.blob();
-      return decodeBlobAsBitmap(blob, fname.toLowerCase().endsWith(".svg"));
-    }
-    return null;
-  }
-
-  async function decodeZipImage(i, u8, p) {
-    if (p < 0 || p + 30 > u8.length) throw new Error("Out of range");
-    const dv = new DataView(u8.buffer, u8.byteOffset);
-    const nl = dv.getUint16(p + 26, true);
-    const el = dv.getUint16(p + 28, true);
-    const s = p + 30 + nl + el;
-    const data = u8.subarray(s, Math.min(u8.length, s + csz[i]));
-
-    let blob;
-    if (meth[i] !== 8) {
-      blob = new Blob([data], { type: mime[i] });
-    } else {
-      const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
-      const rawBlob = await new Response(stream).blob();
-      blob = rawBlob.slice(0, rawBlob.size, mime[i]);
-    }
-    return decodeBlobAsBitmap(blob, mime[i] === "image/svg+xml");
   }
 
   function drawFittedImage(targetCtx, bm, dx, dy, dw, dh) {
@@ -908,7 +647,7 @@
     }
   }
 
-  /* ===== Persistent Tile Pyramid & Live Crisp Cache ===== */
+  /* ===== Persistent Tile Pyramid ===== */
   let tileCols = 0, tileRows = 0, totalSectors = 0;
   let sectorBoxes = [];
   let itemSectors = [];
@@ -1165,7 +904,7 @@
     } catch {}
   }, 3500);
 
-  /* ===== Extraction Scheduler (Works for Both Folder & ZIP) ===== */
+  /* ===== Extraction Scheduler ===== */
   function getVisibleSectorsFor(vx, vy, vs) {
     const T = CONFIG.TILE_SIZE;
     const x0 = vx, y0 = vy, x1 = vx + vw / vs, y1 = vy + vh / vs;
@@ -1196,32 +935,14 @@
     return [...set];
   }
 
-  function buildRunFromIndices(candidates) {
-    if (sourceMode !== "zip") {
-      // Folder mode: direct parallel batch (no byte-contiguity constraint)
-      const unique = [];
-      const seen = new Set();
-      for (let k = 0; k < candidates.length && unique.length < CONFIG.FOLDER_BATCH_SIZE; k++) {
-        const idx = candidates[k];
-        if (!seen.has(idx)) { seen.add(idx); unique.push(idx); }
-      }
-      return unique;
+  function buildBatch(candidates) {
+    const unique = [];
+    const seen = new Set();
+    for (let k = 0; k < candidates.length && unique.length < CONFIG.FOLDER_BATCH_SIZE; k++) {
+      const idx = candidates[k];
+      if (!seen.has(idx)) { seen.add(idx); unique.push(idx); }
     }
-
-    const batch = [];
-    let bytes = 0;
-    candidates.sort((a, b) => a - b);
-    for (let k = 0; k < candidates.length; k++) {
-      const i = candidates[k];
-      if (batch.length > 0 && (i - batch[batch.length - 1] > 8 || bytes > CONFIG.ZIP_RUN_BYTES || batch.length >= CONFIG.ZIP_RUN_MAX_ITEMS)) {
-        break;
-      }
-      if (batch.length === 0 || i !== batch[batch.length - 1]) {
-        batch.push(i);
-        bytes += csz[i];
-      }
-    }
-    return batch;
+    return unique;
   }
 
   function pickNextBatch() {
@@ -1243,7 +964,7 @@
           if (!bakedBoxes[idx] && !inFlight.has(idx)) candidates.push(idx);
         }
       }
-      if (candidates.length > 0) return buildRunFromIndices(candidates);
+      if (candidates.length > 0) return buildBatch(candidates);
     }
 
     let tries = 0;
@@ -1259,52 +980,30 @@
         const idx = sb[k];
         if (!bakedBoxes[idx] && !inFlight.has(idx)) candidates.push(idx);
       }
-      if (candidates.length > 0) return buildRunFromIndices(candidates);
+      if (candidates.length > 0) return buildBatch(candidates);
     }
 
     const stray = [];
     for (let i = 0; i < N && stray.length < CONFIG.FOLDER_BATCH_SIZE; i++) {
       if (!bakedBoxes[i] && !inFlight.has(i)) stray.push(i);
     }
-    return stray.length ? buildRunFromIndices(stray) : [];
+    return stray.length ? buildBatch(stray) : [];
   }
 
   async function processBatch(batch, token) {
     batch.forEach(i => inFlight.add(i));
 
-    try {
-      if (sourceMode === "zip") {
-        const a = batch[0], b = batch[batch.length - 1], base = off[a];
-        const u8 = new Uint8Array(await zipSource.read(base, off[b] + 30 + nlen[b] + csz[b] + 4096));
-        await Promise.all(batch.map(async i => {
-          if (token !== sessionToken) return;
-          let bm = null;
-          try { bm = await decodeZipImage(i, u8, off[i] - base); } catch {}
-          if (token !== sessionToken) { if (bm && bm.close) bm.close(); return; }
-          paintImageIntoLayers(i, bm, token);
-          if (bm) {
-            if (view.s >= CONFIG.HIRES_ZOOM_THRESHOLD && isBoxVisible(i)) putHiResBitmap(i, bm);
-            else if (bm.close) bm.close();
-          }
-        }));
-      } else {
-        await Promise.all(batch.map(async i => {
-          if (token !== sessionToken) return;
-          let bm = null;
-          try { bm = await loadSingleFolderImage(i); } catch {}
-          if (token !== sessionToken) { if (bm && bm.close) bm.close(); return; }
-          paintImageIntoLayers(i, bm, token);
-          if (bm) {
-            if (view.s >= CONFIG.HIRES_ZOOM_THRESHOLD && isBoxVisible(i)) putHiResBitmap(i, bm);
-            else if (bm.close) bm.close();
-          }
-        }));
+    await Promise.all(batch.map(async i => {
+      if (token !== sessionToken) return;
+      let bm = null;
+      try { bm = await loadFolderImage(i); } catch {}
+      if (token !== sessionToken) { if (bm && bm.close) bm.close(); return; }
+      paintImageIntoLayers(i, bm, token);
+      if (bm) {
+        if (view.s >= CONFIG.HIRES_ZOOM_THRESHOLD && isBoxVisible(i)) putHiResBitmap(i, bm);
+        else if (bm.close) bm.close();
       }
-    } catch {
-      if (token === sessionToken) {
-        batch.forEach(i => paintImageIntoLayers(i, null, token));
-      }
-    }
+    }));
 
     batch.forEach(i => inFlight.delete(i));
     if (token === sessionToken) {
@@ -1333,32 +1032,16 @@
     }
   }
 
-  /* ===== High-Res Close-Up Loader (>1.35x) ===== */
   async function fetchHiResBatch(indices, token) {
     indices.forEach(i => hiResPending.add(i));
-    try {
-      if (sourceMode === "zip") {
-        const a = indices[0], b = indices[indices.length - 1], base = off[a];
-        const u8 = new Uint8Array(await zipSource.read(base, off[b] + 30 + nlen[b] + csz[b] + 4096));
-        await Promise.all(indices.map(async i => {
-          if (token !== sessionToken) return;
-          try {
-            const bm = await decodeZipImage(i, u8, off[i] - base);
-            if (token === sessionToken && bm) putHiResBitmap(i, bm);
-            else if (bm && bm.close) bm.close();
-          } catch {}
-        }));
-      } else {
-        await Promise.all(indices.map(async i => {
-          if (token !== sessionToken) return;
-          try {
-            const bm = await loadSingleFolderImage(i);
-            if (token === sessionToken && bm) putHiResBitmap(i, bm);
-            else if (bm && bm.close) bm.close();
-          } catch {}
-        }));
-      }
-    } catch {}
+    await Promise.all(indices.map(async i => {
+      if (token !== sessionToken) return;
+      try {
+        const bm = await loadFolderImage(i);
+        if (token === sessionToken && bm) putHiResBitmap(i, bm);
+        else if (bm && bm.close) bm.close();
+      } catch {}
+    }));
     indices.forEach(i => hiResPending.delete(i));
     if (token === sessionToken) redraw();
   }
@@ -1683,7 +1366,7 @@
                 hiResCache.delete(i);
                 hiResCache.set(i, bm);
                 drawFittedImage(ctx, bm, ox + X[i], oy + Y[i], W[i], H[i]);
-              } else if (!hiResPending.has(i) && missingHi.length < 20) {
+              } else if (!hiResPending.has(i) && missingHi.length < 16) {
                 missingHi.push(i);
               }
             }
@@ -1700,19 +1383,7 @@
     }
 
     if (missingHi.length > 0) {
-      if (sourceMode === "zip") {
-        let run = [], bytes = 0;
-        for (const i of missingHi) {
-          if (run.length && (i - run[run.length - 1] > 6 || bytes > CONFIG.ZIP_RUN_BYTES)) {
-            fetchHiResBatch(run, sessionToken);
-            run = []; bytes = 0;
-          }
-          run.push(i); bytes += csz[i];
-        }
-        if (run.length) fetchHiResBatch(run, sessionToken);
-      } else {
-        fetchHiResBatch(missingHi, sessionToken);
-      }
+      fetchHiResBatch(missingHi, sessionToken);
     }
 
     if (keepShining) redraw();
@@ -2115,7 +1786,7 @@
 
   /* ===== Unified Supervisor Loop ===== */
   setInterval(() => {
-    if (!N || !picker.classList.contains("hidden")) return;
+    if (!N) return;
     const now = performance.now();
 
     if (infinityMode) {
@@ -2247,13 +1918,6 @@
       if (infinityMode) startInfinityCountdown();
       else startStandardShowcase();
     }
-  });
-
-  changeSourceBtn.addEventListener("click", () => {
-    markInteraction();
-    inertia.active = false;
-    toggleMenu(false);
-    picker.classList.remove("hidden");
   });
 
   /* ===== Enhanced Native-Feel Touch, Inertial Momentum & Pinch-Zoom ===== */
@@ -2514,25 +2178,29 @@
   }
   addEventListener("resize", resize);
 
-  /* ===== Unified Loader (HTTP Folder / Local Folder / ZIP) ===== */
-  function resetEngineState() {
-    workersActive = 0;
-    animTarget = null;
-    animCallback = null;
-    inertia.active = false;
-    infPhase = "idle";
-    stdPhase = "idle";
-    hideCountdown();
-    clearShowcaseTimers();
-    highlight = null;
-  }
+  /* ===== Auto-Boot 20k/zipper/ Wall ===== */
+  updateAutoScrollUI();
+  updateIdleNote();
 
-  async function finalizeLaunch(token) {
+  (async () => {
+    resize();
+    const token = ++sessionToken;
+    st.textContent = "Loading 20k/…";
+
+    const list = await loadFileList();
+    if (!list || list.length === 0) {
+      st.textContent = "Missing 20k.txt";
+      notice.classList.add("show");
+      return;
+    }
+
+    folderNames = list;
+    N = list.length;
+    sourceId = `20kzipper:${N}:${list[0]}:${list[N - 1]}`;
+
     buildInstantLayout();
     await initPersistence(token);
     if (token !== sessionToken) return;
-
-    picker.classList.add("hidden");
 
     const startZoom = getZoomAtRatio(CONFIG.INITIAL_ZOOM_RATIO);
     const viewW = vw / startZoom;
@@ -2547,143 +2215,6 @@
     updateAutoScrollUI();
     updateIdleNote();
     pumpWorkers(token);
-  }
-
-  async function loadLocalFolder(fileList) {
-    const token = ++sessionToken;
-    resetEngineState();
-
-    const imgs = [];
-    for (let k = 0; k < fileList.length; k++) {
-      const f = fileList[k];
-      if (!f.name || f.name.startsWith(".") || !EXT.test(f.name)) continue;
-      imgs.push(f);
-    }
-
-    if (!imgs.length) {
-      st.textContent = "No images found";
-      pickTitle.textContent = "No Images Found in Folder";
-      pickDesc.textContent = "Please choose a folder containing PNG, JPG, WebP, or SVG images.";
-      picker.classList.remove("hidden");
-      return;
-    }
-
-    imgs.sort((a, b) => a.name.localeCompare(b.name));
-    sourceMode = "folder_local";
-    localFiles = imgs;
-    N = imgs.length;
-    sourceId = `dir:${N}:${imgs[0].name}:${imgs[N - 1].name}`;
-
-    st.textContent = "Opening folder…";
-    await finalizeLaunch(token);
-  }
-
-  async function loadHttpFolder(baseUrl, names) {
-    const token = ++sessionToken;
-    resetEngineState();
-
-    sourceMode = "folder_http";
-    folderBaseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
-    folderNames = names;
-    N = names.length;
-    sourceId = `httpdir:${folderBaseUrl}:${N}:${names[0]}:${names[N - 1]}`;
-
-    await finalizeLaunch(token);
-  }
-
-  async function loadZipArchive(src) {
-    const token = ++sessionToken;
-    try {
-      resetEngineState();
-      sourceMode = "zip";
-      zipSource = src;
-      sourceId = src.id;
-
-      st.textContent = "Reading index…";
-      pickTitle.textContent = "Opening Archive…";
-      pickDesc.textContent = "Just a moment.";
-
-      await readZipIndex(src);
-      if (token !== sessionToken) return;
-
-      await finalizeLaunch(token);
-    } catch (err) {
-      st.textContent = err.message || "Failed to load archive";
-      pickTitle.textContent = "Load Image Folder";
-      pickDesc.textContent = err.message || "Please choose a folder or .zip file.";
-      picker.classList.remove("hidden");
-    }
-  }
-
-  folderInput.addEventListener("change", e => {
-    if (e.target.files && e.target.files.length) {
-      loadLocalFolder(e.target.files);
-    }
-  });
-
-  zipInput.addEventListener("change", e => {
-    const f = e.target.files[0];
-    if (f) loadZipArchive(createFileSource(f));
-  });
-
-  dropCard.addEventListener("dragover", e => {
-    e.preventDefault();
-    dropCard.style.borderColor = "var(--accent)";
-  });
-  dropCard.addEventListener("dragleave", () => {
-    dropCard.style.borderColor = "var(--line)";
-  });
-  dropCard.addEventListener("drop", e => {
-    e.preventDefault();
-    dropCard.style.borderColor = "var(--line)";
-    const files = e.dataTransfer.files;
-    if (files.length === 1 && files[0].name.toLowerCase().endsWith(".zip")) {
-      loadZipArchive(createFileSource(files[0]));
-    } else if (files.length > 0) {
-      loadLocalFolder(files);
-    }
-  });
-
-  updateAutoScrollUI();
-  updateIdleNote();
-
-  /* ===== Auto-Boot: Manifest JSON -> Folder Listing -> ZIP -> Picker ===== */
-  (async () => {
-    resize();
-
-    if (location.protocol === "http:" || location.protocol === "https:") {
-      st.textContent = "Finding folder…";
-
-      // 1. Check JSON manifests (if generated by make_list.py)
-      for (const mUrl of CONFIG.AUTO_MANIFESTS) {
-        try {
-          const list = await tryFetchManifest(mUrl);
-          // Match folder name (e.g. images.json -> images/)
-          const folderGuess = mUrl.replace(".json", "/");
-          await loadHttpFolder(folderGuess, list);
-          return;
-        } catch {}
-      }
-
-      // 2. Auto-read server directory listing (images/, logos/, 20k/)
-      for (const folderUrl of CONFIG.AUTO_FOLDERS) {
-        try {
-          const { base, files } = await tryFetchDirectoryListing(folderUrl);
-          await loadHttpFolder(base, files);
-          return;
-        } catch {}
-      }
-
-      // 3. Fallback to 20k.zip if present
-      try {
-        const src = await createHttpZipSource(CONFIG.AUTO_ZIP_URL);
-        await loadZipArchive(src);
-        return;
-      } catch {}
-    }
-
-    st.textContent = "Select folder";
-    picker.classList.remove("hidden");
   })();
 })();
 </script>
